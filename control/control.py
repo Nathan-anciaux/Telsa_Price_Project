@@ -2,23 +2,24 @@ from dash import html, callback
 from dash.dependencies import Input, Output, State
 
 import pandas as pd
-from data.data import model
-from data.data import feature_names
-from data.data import target_names
+# on récupere la data qu'il faut
+from data.data import model1
+from data.data import Column_tesla
+
 from view.histogramFactory import make_histogram
 
 # =====================================================
 # Update histograms
 # =====================================================
 @callback(
-    [Output(f"hist-{i}", "figure") for i in range(len(feature_names))],
+    [Output(f"hist-{i}", "figure") for i in range(len(Column_tesla))],
     Input("selected-values", "data"),
 )
 def update_histograms(selected_values):
 
     figs = []
 
-    for i, f in enumerate(feature_names):
+    for i, f in enumerate(Column_tesla):
         val = selected_values[f]
         figs.append(make_histogram(f, val))
 
@@ -30,7 +31,7 @@ def update_histograms(selected_values):
 # =====================================================
 @callback(
     Output("selected-values", "data"),
-    [Input(f"hist-{i}", "clickData") for i in range(len(feature_names))],
+    [Input(f"hist-{i}", "clickData") for i in range(len(Column_tesla))],
     State("selected-values", "data"),
     prevent_initial_call=True,
 )
@@ -43,7 +44,7 @@ def update_selected_values(*args):
     for i, click in enumerate(clicks):
         if click:
             x = click["points"][0]["x"]
-            new_vals[feature_names[i]] = float(x)
+            new_vals[Column_tesla[i]] = float(x)
 
     return new_vals
 
@@ -58,18 +59,12 @@ def update_selected_values(*args):
 )
 def update_prediction(selected_values):
 
-    x = [selected_values[f] for f in feature_names]
+    x = [selected_values[f] for f in Column_tesla]
 
-    X_input = pd.DataFrame([x], columns=feature_names)
+    X_input = pd.DataFrame([x], columns=Column_tesla)
 
-    pred = model.predict(X_input)[0]
-    proba = model.predict_proba(X_input)[0]
+    pred = model1.predict(X_input)[0]
 
-    pred_name = target_names[pred]
+    message = f"Estimation Price Range: {pred:.2f} $"
 
-    proba_list = html.Ul([
-        html.Li(f"{target_names[i]} : {proba[i]:.3f}")
-        for i in range(len(target_names))
-    ])
-
-    return f"Classe prédite : {pred_name}", proba_list
+    return message, ""
