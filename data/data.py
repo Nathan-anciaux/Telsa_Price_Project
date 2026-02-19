@@ -1,6 +1,6 @@
 import pandas as pd
 # j'importe RandomForest de sklearn
-from sklearn.ensemble import RandomForestClassifier
+from sklearn.ensemble import RandomForestRegressor
 
 # =====================================================
 # Data
