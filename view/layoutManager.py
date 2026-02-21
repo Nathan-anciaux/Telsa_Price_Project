@@ -53,7 +53,7 @@ layout = html.Div(
 
                             html.Div(
                                 id="prediction-output",
-                                style={"fontSize": "22px", "marginTop": "20px", "fontWeight": "bold", "color": "#17BECF"},
+                                style={"fontSize": "22px", "marginTop": "20px", "fontWeight": "bold", "color": "#CF1717"},
                             ),
 
                             html.Br(),

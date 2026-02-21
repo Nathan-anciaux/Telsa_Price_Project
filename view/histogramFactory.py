@@ -15,7 +15,7 @@ def make_histogram(feature, selected_value):
             x=jeux_tesla[feature],
             nbinsx=20,
             opacity=0.7,
-            marker_color = "#17BECF"
+            marker_color = "#CF1717"
         )
     )
 
