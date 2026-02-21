@@ -40,9 +40,6 @@ Column_tesla = ["Open", "High", "Low", "Volume", "MA_7", "Volatility_7d"]
 X = jeux_tesla[Column_tesla]
 y = jeux_tesla["Price_Range"]
 
-test1 = pd.DataFrame(X, columns = Date)
-test1["Price_range"] = y
-
 model1 = RandomForestRegressor(
     n_estimators = 200,
     random_state = 42

@@ -1,9 +1,8 @@
-"""
 from dash import dcc, html
 
 import data.data
 from data.data import default_values
-from data.data import feature_names
+from data.data import Column_tesla
 
 
 # =====================================================
@@ -12,7 +11,7 @@ from data.data import feature_names
 layout = html.Div(
         style={"padding": "20px"},
         children=[
-            html.H2("Prédiction – Random Forest (Iris)"),
+            html.H2("Prédiction du prix de l'action Tesla"),
             html.Hr(),
 
             dcc.Store(
@@ -36,7 +35,7 @@ layout = html.Div(
                                         id=f"hist-{i}",
                                         config={"displayModeBar": False},
                                     )
-                                    for i in range(len(feature_names))
+                                    for i in range(len(Column_tesla))
                                 ]
                             ),
                         ],
@@ -54,7 +53,7 @@ layout = html.Div(
 
                             html.Div(
                                 id="prediction-output",
-                                style={"fontSize": "22px", "marginTop": "20px"},
+                                style={"fontSize": "22px", "marginTop": "20px", "fontWeight": "bold", "color": "#17BECF"},
                             ),
 
                             html.Br(),
@@ -69,4 +68,3 @@ layout = html.Div(
             ),
         ],
     )
-"""

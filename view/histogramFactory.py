@@ -1,8 +1,6 @@
-"""
 import plotly.graph_objects as go
 
-import data.data
-from data.data import iris_df
+from data.data import jeux_tesla
 
 # =====================================================
 # Histogram helper
@@ -14,9 +12,10 @@ def make_histogram(feature, selected_value):
 
     fig.add_trace(
         go.Histogram(
-            x=iris_df[feature],
+            x=jeux_tesla[feature],
             nbinsx=20,
             opacity=0.7,
+            marker_color = "17BECF"
         )
     )
 
@@ -25,14 +24,14 @@ def make_histogram(feature, selected_value):
         x=selected_value,
         line_dash="dash",
         line_width=2,
+        line_color = "red"
     )
 
     fig.update_layout(
         title=feature,
         height=200,
         margin=dict(l=40, r=20, t=40, b=40),
-        showlegend=True,
+        showlegend=False,
     )
 
     return fig
-"""
