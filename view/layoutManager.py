@@ -31,9 +31,20 @@ layout = html.Div(
 
                             html.Div(
                                 children=[
-                                    dcc.Graph(
-                                        id=f"hist-{i}",
-                                        config={"displayModeBar": False},
+                                    html.Div(
+                                        style={"marginBottom": "40px", "borderBottom": "1px solid #ddd"}, # Un peu de style pour séparer chaque variable
+                                        children=[
+                                            # histogrammes
+                                            dcc.Graph(
+                                                id=f"hist-{i}",
+                                                config={"displayModeBar": False},
+                                            ),
+
+                                            dcc.Graph(
+                                                id=f"pie-{i}",
+                                                config={"displayModeBar": False},
+                                            )
+                                        ]
                                     )
                                     for i in range(len(Column_tesla))
                                 ]
