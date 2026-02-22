@@ -15,7 +15,7 @@ def make_pie_chart(feature):
             labels=comptage.index, # "Bas" "Moy" "Haut"
             values=comptage.values, # nb jours
             hole=0.4, # fait un trou dans le graph c'est trop stylé
-            marker_colors=["#13CFEB", "#220EFF", "#EC71CD"]
+            marker_colors=["#FFBDBD", "#F06E6E", "#FF0000"]
         )
     ])
 
