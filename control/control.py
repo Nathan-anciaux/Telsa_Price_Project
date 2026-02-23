@@ -8,85 +8,74 @@ from data.data import Column_tesla
 
 from view.histogramFactory import make_histogram
 from view.pieFactory import make_pie_chart
+from view.lineChartFactory import make_stock_chart
 
 from data.data import jeux_tesla
 
+# =====================================================
+# Update graph
+# =====================================================
 
-# =====================================================
-# Update histograms
-# =====================================================
 @callback(
-    [Output(f"hist-{i}", "figure") for i in range(len(Column_tesla))],
+    Output("dynamic-hist", "figure"),
+    Output("dynamic-pie", "figure"),
+    Input("column-selector", "value"),
     Input("selected-values", "data"),
 )
-def update_histograms(selected_values):
 
-    figs = []
+def update_dynamic_graphs(selected_col, selected_values):
+    val = selected_values[selected_col]
+    hist_fig = make_histogram(selected_col, val)
+    pie_fig = make_pie_chart(selected_col)
 
-    for i, f in enumerate(Column_tesla):
-        val = selected_values[f]
-        figs.append(make_histogram(f, val))
+    return hist_fig, pie_fig
 
-    return figs
 
 # =====================================================
-# Update pie charts
+# Update lineChart
 # =====================================================
 @callback(
-    [Output(f"pie-{i}", "figure") for i in range(len(Column_tesla))],
+    Output("main-stock-chart", "figure"),
     Input("selected-values", "data"),
 )
-def update_pie_charts(selected_values):
-
-    figs = []
-    
-    for f in Column_tesla:
-        figs.append(make_pie_chart(f))
-        
-    return figs
+def update_main_chart(selected_values):
+       
+    return make_stock_chart(jeux_tesla)
 
 # =====================================================
-# Click handling (Hist and Pie)
+# Click handling (Garde UNIQUEMENT ce bloc là)
 # =====================================================
 @callback(
     Output("selected-values", "data"),
-    [Input(f"hist-{i}", "clickData") for i in range(len(Column_tesla))],
-    [Input(f"pie-{i}", "clickData") for i in range(len(Column_tesla))],
+    Input("dynamic-hist", "clickData"),
+    Input("dynamic-pie", "clickData"),
+    Input("main-stock-chart", "clickData"),
+    State("column-selector", "value"),
     State("selected-values", "data"),
     prevent_initial_call=True,
 )
-def update_selected_values(*args):
-    # dash envoie 6 clics hist, 2 clics pie et 1 clic global
-    num_cols = len(Column_tesla)
-    hist_clicks = args[:num_cols]
-    pie_clicks = args[num_cols:2*num_cols]
-    current = args[-1]
-
-    new_vals = current.copy()
-
-    # dit quel graph a été cliqué ( ex pie-2)
+def update_selected_values(hist_click, pie_click, line_click, current_col, current_data):
+    new_vals = current_data.copy()
     triggered_id = ctx.triggered_id
 
-    #sépare "pie" et "2" par ex
-    comp_type, idx_str = triggered_id.split("-")
-    idx = int(idx_str)
-    col_name = Column_tesla[idx]
+    # Clic sur l'histogramme
+    if triggered_id == "dynamic-hist" and hist_click:
+        new_vals[current_col] = float(hist_click["points"][0]["x"])
 
-    # hist part
-    if comp_type == "hist":
-        click = hist_clicks[idx]
-        if click:
-            x = click["points"][0]["x"]
-            new_vals[col_name] = float(x) # val précise axe X
-    
-    # pie part
-    elif comp_type == "pie":
-        click = pie_clicks[idx]
-        if click:
-            label_clique = click["points"][0]["label"] # recup nom partie cliqué : ex "Bas"
-            categories = pd.cut(jeux_tesla[col_name], bins=3, labels=["Bas", "Moyen", "Haut"]) # on re crée les 3 boites pour retrouver les valeurs
-            jours_correspondants = jeux_tesla[col_name][categories == label_clique] # on isole les jours qui corresponde à la partie cliqué
-            new_vals[col_name] = float(jours_correspondants.mean()) # calc moyenne des jours
+    # Clic sur le camembert
+    elif triggered_id == "dynamic-pie" and pie_click:
+        label_clique = pie_click["points"][0]["label"]
+        categories = pd.cut(jeux_tesla[current_col], bins=3, labels=["Bas", "Moyen", "Haut"])
+        jours = jeux_tesla[current_col][categories == label_clique]
+        new_vals[current_col] = float(jours.mean())
+
+    # Clic sur le graphique boursier
+    elif triggered_id == "main-stock-chart" and line_click:
+        date_cliquee = line_click["points"][0]["x"]
+        ligne = jeux_tesla[jeux_tesla["Date"] == date_cliquee]
+        if not ligne.empty:
+            for col in Column_tesla:
+                new_vals[col] = float(ligne[col].values[0])
 
     return new_vals
 

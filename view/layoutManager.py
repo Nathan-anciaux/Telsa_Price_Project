@@ -27,28 +27,23 @@ layout = html.Div(
                     html.Div(
                         style={"width": "60%"},
                         children=[
-                            html.H4("Sélection des variables"),
-
-                            html.Div(
-                                children=[
-                                    html.Div(
-                                        style={"marginBottom": "40px", "borderBottom": "1px solid #ddd"}, # Un peu de style pour séparer chaque variable
-                                        children=[
-                                            # histogrammes
-                                            dcc.Graph(
-                                                id=f"hist-{i}",
-                                                config={"displayModeBar": False},
-                                            ),
-
-                                            dcc.Graph(
-                                                id=f"pie-{i}",
-                                                config={"displayModeBar": False},
-                                            )
-                                        ]
-                                    )
-                                    for i in range(len(Column_tesla))
-                                ]
+                            #html.H4("Sélection des variables"),
+                            
+                            dcc.Dropdown(
+                                id="column-selector",
+                                options=[{"label":col, "value":col} for col in Column_tesla],
+                                value=Column_tesla[0],
+                                clearable=False,
+                                style = {"marginBottom": "20px"}
                             ),
+
+                            html.Div([
+                                dcc.Graph(id="dynamic-hist", config={"displayModeBar": False}),
+                                dcc.Graph(id="dynamic-pie", config={"displayModeBar": False}),
+                            ]),
+
+
+                            dcc.Graph(id = "main-stock-chart"),
                         ],
                     ),
 
