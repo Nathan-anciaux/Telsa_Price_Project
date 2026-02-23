@@ -27,22 +27,27 @@ layout = html.Div(
                     html.Div(
                         style={"width": "60%"},
                         children=[
-                            #html.H4("Sélection des variables"),
                             
+                            #Menu déroulant pour choisir la variable et pas mettre des graphs partout
                             dcc.Dropdown(
-                                id="column-selector",
+                                id="column-selector", #colonne du dataset
                                 options=[{"label":col, "value":col} for col in Column_tesla],
                                 value=Column_tesla[0],
-                                clearable=False,
+                                clearable=False, #on vide pas le menu
                                 style = {"marginBottom": "20px"}
                             ),
 
+                            #les 2 graphs qui vont changer selon le choix
                             html.Div([
                                 dcc.Graph(id="dynamic-hist", config={"displayModeBar": False}),
+                                html.P(
+                                    id="hist-legend",
+                                    style={"fontSize": "15px", "marginTop": "15px", "textAlign": "center"}
+                                ),
                                 dcc.Graph(id="dynamic-pie", config={"displayModeBar": False}),
                             ]),
 
-
+                            #graph boursier
                             dcc.Graph(id = "main-stock-chart"),
                         ],
                     ),

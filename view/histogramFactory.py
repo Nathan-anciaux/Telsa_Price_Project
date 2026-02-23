@@ -19,7 +19,7 @@ def make_histogram(feature, selected_value):
         )
     )
 
-    # Selected value
+    # Selected value curseur
     fig.add_vline(
         x=selected_value,
         line_dash="dash",
