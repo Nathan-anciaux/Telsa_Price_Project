@@ -58,13 +58,14 @@ layout = html.Div(
                             "width": "40%",
                             "paddingLeft": "30px",
                             "textAlign": "center",
+                            "marginTop": "350px",
                         },
                         children=[
                             html.H4("Résultat"),
 
                             html.Div(
                                 id="prediction-output",
-                                style={"fontSize": "22px", "marginTop": "20px", "fontWeight": "bold", "color": "#CF1717"},
+                                style={"fontSize": "22px", "marginTop": "30px", "fontWeight": "bold", "color": "#CF1717"},
                             ),
 
                             html.Br(),
