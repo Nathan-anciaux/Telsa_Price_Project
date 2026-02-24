@@ -4,7 +4,7 @@ This repository stores an object oriented version of the `Telsa_Price_Project` c
 
 ## Installing and running the app
 
-First things first, you should create a dedicated environment for the app and install all required libraries as indicated in the requirements.txt file.
+First things first, you should create a dedicated environment for the app and install all required libraries as indicated in the `requirements.txt` file.
 
 The app is then launched by simply entering the python app_MVC.py command on a terminal (or from within your preferred IDE).
 
