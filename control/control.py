@@ -83,7 +83,7 @@ def update_selected_values(hist_click, pie_click, line_click, current_col, curre
     elif triggered_id == "dynamic-pie" and pie_click:
         #bas moyen ou haut
         label_clique = pie_click["points"][0]["label"]
-        categories = pd.cut(jeux_tesla[current_col], bins=3, labels=["Bas", "Moyen", "Haut"])
+        categories = pd.cut(jeux_tesla[current_col], bins=4, labels=["0 à 125 M", "125 à 250 M", "250 à 375 M","375 à 500 M"])
         #calcule la moyenne des jours appartenant au label
         jours = jeux_tesla[current_col][categories == label_clique]
         new_vals[current_col] = float(jours.mean())
