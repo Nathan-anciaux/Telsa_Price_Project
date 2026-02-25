@@ -72,7 +72,7 @@ class ControlManager:
             elif triggered_id == "dynamic-pie" and pie_click:
                 label_clique = pie_click["points"][0]["label"]
                 # Découpage dynamique des catégories
-                categories = pd.cut(df_full[current_col], bins=4, labels=["Tranche 1", "Tranche 2", "Tranche 3", "Tranche 4"])
+                categories = pd.cut(df_full[current_col], bins=4, labels=["Valeurs de 0 à 125 M", "Valeurs de 125 à 250 M", "Valeurs de 250 à 325 M", "Valeurs de 325 à 500 M"])
                 jours = df_full[current_col][categories == label_clique]
                 new_vals[current_col] = float(jours.mean())
 

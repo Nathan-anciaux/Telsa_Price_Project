@@ -12,7 +12,7 @@ class PieFactory:
         categories = pd.cut(
             df[feature], 
             bins=4, 
-            labels=["Tranche 1", "Tranche 2", "Tranche 3", "Tranche 4"]
+            labels=["Valeurs de 0 à 125 M", "Valeurs de 125 à 250 M", "Valeurs de 250 à 325 M", "Valeurs de 325 à 500 M"]
         )
 
         comptage = categories.value_counts()

@@ -1,5 +1,4 @@
 import dash
-from dash import html, Input, Output, State, callback
 
 from data.data_manager import DataManager
 from view.view_manager import ViewManager
