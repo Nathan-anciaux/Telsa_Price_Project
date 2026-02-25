@@ -4,14 +4,6 @@ from dash import html, Input, Output, State, callback
 from data.data_manager import DataManager
 from view.view_manager import ViewManager
 from control.control_manager import ControlManager
-"""
-# =====================================================
-# App
-# =====================================================
-app = dash.Dash(__name__)
-server = app.server
-app.layout = view.layout
-"""
 # =====================================================
 # App
 # =====================================================
