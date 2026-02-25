@@ -93,3 +93,6 @@ class DataManager:
     
     def get_full_dataframe(self):
         return self.jeux_tesla
+
+    def get_defaults(self):
+       return self.get_default_values()

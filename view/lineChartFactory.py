@@ -1,18 +1,36 @@
 import plotly.graph_objects as go
 
-def make_stock_chart(df):
-    fig = go.Figure()
-    #graph en bougie avec tous les prix
-    fig.add_trace(go.Candlestick(
-        x=df["Date"], open = df["Open"], high = df["High"],
-        low=df["Low"], close = df["Close"], name="Prix"
-    ))
+class LineChartFactory:
+    def make_stock_chart(self, data_manager):
+        # Récupération du dataframe complet (avec Date, Open, High, etc.)
+        df = data_manager.get_full_dataframe()
+        
+        fig = go.Figure()
 
-    #on ajoute la moyenne (trait principal)
-    fig.add_trace(go.Scatter(
-        x=df["Date"], y = df["MA_7"], mode="lines",
-        name="Moyenne 7j", line=dict(color = "orange")
-    ))
+        # Graphique en bougie (Candlestick)
+        fig.add_trace(go.Candlestick(
+            x=df["Date"], 
+            open=df["Open"], 
+            high=df["High"],
+            low=df["Low"], 
+            close=df["Close"], 
+            name="Prix Tesla"
+        ))
 
-    fig.update_layout(template= "plotly_dark", xaxis_rangeslider_visible=True)
-    return fig
+        # Moyenne mobile 7 jours
+        if "MA_7" in df.columns:
+            fig.add_trace(go.Scatter(
+                x=df["Date"], 
+                y=df["MA_7"], 
+                mode="lines",
+                name="Moyenne 7j", 
+                line=dict(color="orange", width=1.5)
+            ))
+
+        fig.update_layout(
+            title="Historique Boursier Tesla",
+            template="plotly_dark", 
+            xaxis_rangeslider_visible=True,
+            height=400
+        )
+        return fig

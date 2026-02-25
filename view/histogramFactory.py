@@ -1,37 +1,44 @@
 import plotly.graph_objects as go
 
-from data.data import jeux_tesla
-
 # =====================================================
 # Histogram helper
 # =====================================================
 
-def make_histogram(feature, selected_value):
+class HistogramFactory:
+    def __init__(self):
+        # On peut définir des couleurs par défaut ici
+        self.bar_color = "#0091FF"
+        self.line_color = "black"
 
-    fig = go.Figure()
+    def make_histogram(self, feature, selected_value, data_manager):
+        # On récupère les données via le data_manager
+        df = data_manager.get_full_dataframe()
+        
+        fig = go.Figure()
 
-    fig.add_trace(
-        go.Histogram(
-            x=jeux_tesla[feature],
-            nbinsx=20,
-            opacity=0.7,
-            marker_color = "#0091FF"
+        fig.add_trace(
+            go.Histogram(
+                x=df[feature],
+                nbinsx=20,
+                opacity=0.7,
+                marker_color=self.bar_color
+            )
         )
-    )
 
-    # Selected value curseur
-    fig.add_vline(
-        x=selected_value,
-        line_dash="dash",
-        line_width=2,
-        line_color = "black"
-    )
+        # Selected value curseur
+        fig.add_vline(
+            x=selected_value,
+            line_dash="dash",
+            line_width=2,
+            line_color=self.line_color
+        )
 
-    fig.update_layout(
-        title=feature,
-        height=200,
-        margin=dict(l=40, r=20, t=40, b=40),
-        showlegend=False,
-    )
+        fig.update_layout(
+            title=f"Distribution : {feature}",
+            height=200,
+            margin=dict(l=40, r=20, t=40, b=40),
+            showlegend=False,
+            template="plotly_white"
+        )
 
-    return fig
+        return fig

@@ -116,8 +116,8 @@ class LayoutManager:
                                     #Menu déroulant pour choisir la variable et pas mettre des graphs partout
                                     dcc.Dropdown(
                                         id="column-selector", #colonne du dataset
-                                        options=[{"label":col, "value":col} for col in data_manager.get_feature_names()],
-                                        value=data_manager.get_default_feature()[0],
+                                        options=[{"label":col, "value":col} for col in data_manager.get_features_names()],
+                                        value=data_manager.get_default_feature(),
                                         clearable=False, #on vide pas le menu
                                         style = {"marginBottom": "20px"}
                                     ),
