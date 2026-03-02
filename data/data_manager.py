@@ -50,12 +50,17 @@ default_values = X.mean().to_dict()
 """
 
 class DataManager:
+    # chargen nettoie et prédis avec les données qu'on a transmis
     def __init__(self):
         path = "./data"
         file = "tesla_stock_data_2010_2025.csv"
+
+        # on charge le CSV et on retire les ligne vide direct
         self.jeux_tesla = pd.read_csv(f"{path}/{file}").dropna()
         self._feature_names = ["Open", "High", "Low", "Volume", "MA_7", "Volatility_7d"]
 
+        # data = colonnes d'entrées
+        # target la valeur qu'on veut prédire
         self._data = self.jeux_tesla[self._feature_names]
         self._target = self.jeux_tesla["Price_Range"]
         self._target_names = "Price_Range"
@@ -65,6 +70,8 @@ class DataManager:
             random_state = 42
         )
         self._model.fit(self._data, self._target)
+
+        # on calcule la moyenne de chaque colonne pour initialiser l'application
         self.default_values = self._data.mean().to_dict()
 
     def get_data(self):
@@ -80,12 +87,18 @@ class DataManager:
         return self._feature_names
     
     def get_model_prediction(self, x_values):
+        # on convertit le dictionnaire en liste dans le bon ordre 
         if isinstance(x_values, dict):
             x_values = [x_values[feature] for feature in self._feature_names]
+
+        # convertion en DataFrame pour sklearn soit ok avec
         X_input = pd.DataFrame([x_values], columns=self._feature_names)
+
+        # retourne la valeur prédite
         return self._model.predict(X_input)[0]
     
     def get_default_feature(self):
+        # colonne affiché au lancement du site
         return "Open"
     
     def get_default_values(self):
@@ -95,4 +108,5 @@ class DataManager:
         return self.jeux_tesla
 
     def get_defaults(self):
+        # pratique pour initialiser le dcc.store de dash
        return self.get_default_values()
