@@ -13,6 +13,18 @@ class ControlManager:
     def register_callbacks(self):
         # enregistre tous les callbacks possibles dans notre site
 
+        @self.app.callback(
+            Output('page-content', 'children'),
+            Input('url', 'pathname')
+        )
+        def display_page(pathname):
+            """Logique de changement de page selon l'URL"""
+            if pathname == '/dashboard':
+                return self.view_manager.get_tesla_layout()
+            else:
+                # Retour à l'accueil pour toute autre URL
+                return self.view_manager.get_home_layout()
+
         # se declenche des que l'utilisateurs fais une action sur les graphiques
         @callback(
             Output("dynamic-hist", "figure"),

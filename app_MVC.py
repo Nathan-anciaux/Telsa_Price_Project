@@ -6,12 +6,12 @@ from control.control_manager import ControlManager
 # =====================================================
 # App
 # =====================================================
-app = dash.Dash(__name__)
+app = dash.Dash(__name__, suppress_callback_exceptions=True)
 server = app.server
 
 app_dm = DataManager()
 app_vm = ViewManager(app_dm)
-app.layout = app_vm.get_layout()
+app.layout = app_vm.get_root_layout()
 app_cm = ControlManager(app, app_dm, app_vm)
 app_cm.register_callbacks()
 

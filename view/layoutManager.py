@@ -9,16 +9,39 @@ class LayoutManager:
     def __init__(self):
         pass
     def get_root_layout(self):
-        return html.Div([
-            dcc.Location(id='url', refresh=False), # Surveille l'URL
-            html.Div(id='page-content')            # Zone où le contenu change
-        ])
+        return html.Div(
+            style={"display": "flex", "flexDirection": "column", "minHeight": "100vh"},
+            children=[
+                dcc.Location(id='url', refresh=False),
+                
+                # --- Barre de Navigation ---
+                html.Nav(
+                    style={
+                        "backgroundColor": "#1e1e1e", 
+                        "padding": "15px 30px", 
+                        "display": "flex", 
+                        "gap": "30px",
+                        "borderBottom": "2px solid #e2212d"
+                    },
+                    children=[
+                        dcc.Link("Accueil", href='/', style={"color": "white", "textDecoration": "none", "fontWeight": "bold"}),
+                        dcc.Link("Dashboard Tesla", href='/dashboard', style={"color": "white", "textDecoration": "none", "fontWeight": "bold"}),
+                    ]
+                ),
+                
+                # --- Zone de Contenu Dynamique ---
+                # flex: 1 permet à cette zone de pousser le footer vers le bas
+                html.Div(id='page-content', style={"padding": "40px", "flex": "1"}),
+                
+                
+            ]
+        )
     
     def get_home_layout(self):
         #affichage de la page d'acceuil
         return html.Div([
             html.H1("Analyse de tesla", style={'textAlign': 'center', 'marginTop': '50px'}),
-            html.P("Outils de rédiction et d'analyse des actions Tesla au cours du temps.", 
+            html.P("Outils de prédiction et d'analyse des actions Tesla au cours du temps.", 
                    style={'textAlign': 'center'}),
             
             # Bouton de navigation
