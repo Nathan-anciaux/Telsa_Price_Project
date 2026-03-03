@@ -1,6 +1,7 @@
 import pandas as pd
 # j'importe RandomForest de sklearn
 from sklearn.ensemble import RandomForestRegressor
+from configparser import ConfigParser
 
 # =====================================================
 # DataManager
@@ -51,87 +52,104 @@ default_values = X.mean().to_dict()
 
 class DataManager:
     # chargen nettoie et prédis avec les données qu'on a transmis
-    def __init__(self):
-        path = "./data"
-        file = "tesla_stock_data_2010_2025.csv"
+    def __init__(self,config_file='config.ini'):
+        self.config = ConfigParser()
+        self.config.read(config_file)
 
-        # on charge le CSV et on retire les ligne vide direct
-        self.jeux_tesla = pd.read_csv(f"{path}/{file}").dropna()
-        self._feature_names = ["Open", "High", "Low", "Volume", "MA_7", "Volatility_7d"]
+        # databases pour stocker les 4 dataframes
+        self.dataframes = {}
+        self.features_dict = {}
+        self.target_names = {}
+        self.models = {}
+        self.default_values_dict = {}
 
-        # data = colonnes d'entrées
-        # target la valeur qu'on veut prédire
-        self._data = self.jeux_tesla[self._feature_names]
-        self._target = self.jeux_tesla["Price_Range"]
-        self._target_names = "Price_Range"
+        datasets_bruts = self.config.get('GENERAL', 'datasets_a_charger')
+        liste_datasets = [nom.strip() for nom in datasets_bruts.split(',')]
 
-        self._model = RandomForestRegressor(
-            n_estimators = 200,
-            random_state = 42
-        )
-        self._model.fit(self._data, self._target)
+        for nom_dataset in liste_datasets:
+            self._charger_un_dataset(nom_dataset)
 
-        # on calcule la moyenne de chaque colonne pour initialiser l'application
-        self.default_values = self._data.mean().to_dict()
+    def _charger_un_dataset(self, nom_dataset):
+        chemin = self.config.get(nom_dataset, 'chemin')
+        features_brutes = self.config.get(nom_dataset, 'features')
+        target_name = self.config.get(nom_dataset, 'target')
 
-    def get_data(self):
-        return self._data
+        # Nettoyage des noms de colonnes
+        features = [f.strip() for f in features_brutes.split(',')]
+
+        df = pd.read_csv(chemin).dropna()
+
+        # machine learning
+        X = df[features]
+        y = df[target_name]
+        model = RandomForestRegressor(n_estimators=200, random_state=42)
+        model.fit(X, y)
+
+        # dico
+        self.dataframesnom_datase = df
+        self.features_dict[nom_dataset] = features
+        self.target_names[nom_dataset] = target_name
+        self.models[nom_dataset] = model
+        self.default_values_dict[nom_dataset] = X.mean().to_dict()
+
+    def get_data(self, nom_dataset):
+        df = self.dataframes[nom_dataset]
+        features = self.features_dict[nom_dataset]
+        return df[features]
     
-    def get_target(self):
-        return self._target
+    def get_target(self, nom_dataset):
+        df = self.dataframes[nom_dataset]
+        target_name = self.target_names[nom_dataset]
+        return df[target_name]
     
-    def get_target_names(self):
-        return self._target_names
+    def get_target_names(self, nom_dataset):
+        return self.target_names[nom_dataset]
     
-    def get_features_names(self):
-        return self._feature_names
+    def get_features_names(self, nom_dataset):
+        return self.features_dict[nom_dataset]
     
-    def get_model_prediction(self, x_values):
-        # on convertit le dictionnaire en liste dans le bon ordre 
+    def get_model_prediction(self, nom_dataset, x_values):
+       
+        features = self.features_dict[nom_dataset]
+        model = self.models[nom_dataset]
+
         if isinstance(x_values, dict):
-            x_values = [x_values[feature] for feature in self._feature_names]
+            x_values = [x_values[feature] for feature in features]
 
-        # convertion en DataFrame pour sklearn soit ok avec
-        X_input = pd.DataFrame([x_values], columns=self._feature_names)
-
-        # retourne la valeur prédite
-        return self._model.predict(X_input)[0]
+        X_input = pd.DataFrame([x_values], columns=features)
+        return model.predict(X_input)[0]
     
-    def get_default_feature(self):
-        # colonne affiché au lancement du site
-        return "Open"
-    
-    def get_default_values(self):
-        return self.default_values
-    
-    def get_full_dataframe(self):
-        return self.jeux_tesla
-
-    def get_defaults(self):
-        # pratique pour initialiser le dcc.store de dash
-       return self.get_default_values()
-    
-    def _get_pie_categories(self, column_name):
+    def get_default_feature(self, nom_dataset):
         
-        df = self.jeux_tesla
+        return self.features_dict[nom_dataset][0]
+    
+    def get_default_values(self, nom_dataset):
+        return self.default_values_dict[nom_dataset]
+    
+    def get_full_dataframe(self, nom_dataset):
+        return self.dataframes[nom_dataset]
+
+    def get_defaults(self, nom_dataset):
+       return self.get_default_values(nom_dataset)
+    
+    def _get_pie_categories(self, nom_dataset, column_name):
+        df = self.dataframes[nom_dataset]
+        
         return pd.cut(
             df[column_name], 
             bins=4, 
-            labels=["Valeurs de 0 à 125 M", "Valeurs de 125 à 250 M", "Valeurs de 250 à 325 M", "Valeurs de 325 à 500 M"]
+            labels=["Quartile 1 (Bas)", "Quartile 2", "Quartile 3", "Quartile 4 (Haut)"]
         )
 
-    def get_pie_chart_data(self, feature):
-        
-        categories = self._get_pie_categories(feature)
+    def get_pie_chart_data(self, nom_dataset, feature):
+        categories = self._get_pie_categories(nom_dataset, feature)
         
         comptage = categories.value_counts()
         return comptage.index.tolist(), comptage.values.tolist()
 
-    def get_pie_category_mean(self, column_name, label_clique):
-        
-        df = self.jeux_tesla
-
-        categories = self._get_pie_categories(column_name)
+    def get_pie_category_mean(self, nom_dataset, column_name, label_clique):
+        df = self.dataframes[nom_dataset]
+        categories = self._get_pie_categories(nom_dataset, column_name)
         
         jours = df[column_name][categories == label_clique]
         
@@ -141,18 +159,17 @@ class DataManager:
             
         return float(moyenne)
     
-    def get_features_by_date(self, date_string):
-        
-        df = self.jeux_tesla
+    def get_features_by_date(self, nom_dataset, date_string):
+        df = self.dataframes[nom_dataset]
+        features = self.features_dict[nom_dataset]
 
         ligne = df[df["Date"] == date_string]
         
         if ligne.empty:
             return None
             
-        # Construit un dictionnaire {nom_colonne: valeur}
         features_dict = {}
-        for col in self._feature_names:
+        for col in features:
             features_dict[col] = float(ligne[col].values[0])
             
         return features_dict
