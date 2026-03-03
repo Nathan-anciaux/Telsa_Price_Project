@@ -4,7 +4,6 @@ from view.lineChartFactory import LineChartFactory
 from view.layoutManager import LayoutManager
 
 # view/view_manager.py
-
 class ViewManager:
     def __init__(self, data_manager):
         self.data_manager = data_manager
@@ -14,10 +13,14 @@ class ViewManager:
         self.linechart_maker = LineChartFactory()
         self.layout_manager = LayoutManager()
 
-    def get_layout(self):
-        return self.layout_manager.get_layout(self.data_manager)
+    def get_root_layout(self):
+        return self.layout_manager.get_root_layout()
+    
+    def get_home_layout(self):
+        return self.layout_manager.get_home_layout()
 
-    # --- Les 3 fonctions demandées ---
+    def get_tesla_layout(self):
+        return self.layout_manager.get_tesla_layout(self.data_manager)
 
     def create_histogramme(self, feature, val):
         return self.histogram_maker.make_histogram(feature, val, self.data_manager)
