@@ -111,15 +111,28 @@ class DataManager:
         # pratique pour initialiser le dcc.store de dash
        return self.get_default_values()
     
-    def get_pie_category_mean(self, column_name, label_clique):
+    def _get_pie_categories(self, column_name):
         
         df = self.jeux_tesla
-        
-        categories = pd.cut(
+        return pd.cut(
             df[column_name], 
             bins=4, 
             labels=["Valeurs de 0 à 125 M", "Valeurs de 125 à 250 M", "Valeurs de 250 à 325 M", "Valeurs de 325 à 500 M"]
         )
+
+    def get_pie_chart_data(self, feature):
+        
+        categories = self._get_pie_categories(feature)
+        
+        comptage = categories.value_counts()
+        return comptage.index.tolist(), comptage.values.tolist()
+
+    def get_pie_category_mean(self, column_name, label_clique):
+        
+        df = self.jeux_tesla
+
+        categories = self._get_pie_categories(column_name)
+        
         jours = df[column_name][categories == label_clique]
         
         moyenne = jours.mean()

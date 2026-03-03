@@ -6,21 +6,12 @@ class PieFactory:
         self.colors = ["#CFE8FB", "#A2D7FF", "#5CB8FF", "#0091FF"]
 
     def make_pie_chart(self, feature, data_manager):
-        df = data_manager.get_full_dataframe()
-        
-        # Découpage dynamique des données
-        categories = pd.cut(
-            df[feature], 
-            bins=4, 
-            labels=["Valeurs de 0 à 125 M", "Valeurs de 125 à 250 M", "Valeurs de 250 à 325 M", "Valeurs de 325 à 500 M"]
-        )
-
-        comptage = categories.value_counts()
+        labels, values = data_manager.get_pie_chart_data(feature)
 
         fig = go.Figure(data=[
             go.Pie(
-                labels=comptage.index,
-                values=comptage.values,
+                labels=labels,
+                values=values,
                 hole=0.4,
                 marker_colors=self.colors
             )

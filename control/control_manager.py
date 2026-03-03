@@ -84,7 +84,6 @@ class ControlManager:
             # clic sur le camembert
             elif triggered_id == "dynamic-pie" and pie_click:
                 label_clique = pie_click["points"][0]["label"]
-                # On demande au dataManager de calculer la moyenne
                 moyenne = self.data_manager.get_pie_category_mean(current_col, label_clique)
                 
                 if moyenne is not None:
@@ -95,7 +94,6 @@ class ControlManager:
             # clic que la bourse 
             elif triggered_id == "main-stock-chart" and line_click:
                 date_cliquee = line_click["points"][0]["x"]
-                # On demande au dataManager de récupérer les valeurs pour cette date
                 features_dict = self.data_manager.get_features_by_date(date_cliquee)
                 
                 if features_dict:
