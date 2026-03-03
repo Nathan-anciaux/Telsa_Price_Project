@@ -52,8 +52,28 @@ class LayoutManager:
             html.Div([
                 dcc.Link(
                     html.Button("Accéder aux données Tesla", id="go-to-data-btn"),
-                    href='/dashboard' # Définit la nouvelle URL
-                )
+                    href='/tesla' # Définit la nouvelle URL
+                ),
+                html.Br(),
+                dcc.Link(
+                    html.Button("Accéder aux données BMW", id="go-to-data-btn"),
+                    href='/bmw' # Définit la nouvelle URL
+                ),
+                html.Br(),
+                dcc.Link(
+                    html.Button("Accéder aux données Lamborghini", id="go-to-data-btn"),
+                    href='/lambo' # Définit la nouvelle URL
+                ),
+                html.Br(),
+                dcc.Link(
+                    html.Button("Accéder aux données Toyota", id="go-to-data-btn"),
+                    href='/toyota' # Définit la nouvelle URL
+                ),
+                html.Br(),
+                dcc.Link(
+                    html.Button("Accéder au comparateur", id="go-to-data-btn"),
+                    href='/compare' # Définit la nouvelle URL
+                ),
             ], style={'textAlign': 'center', 'marginTop': '30px'})
         ])
 
