@@ -8,8 +8,29 @@ from dash import dcc, html
 class LayoutManager:
     def __init__(self):
         pass
+    def get_root_layout(self):
+        return html.Div([
+            dcc.Location(id='url', refresh=False), # Surveille l'URL
+            html.Div(id='page-content')            # Zone où le contenu change
+        ])
+    
+    def get_home_layout(self):
+        #affichage de la page d'acceuil
+        return html.Div([
+            html.H1("Analyse de tesla", style={'textAlign': 'center', 'marginTop': '50px'}),
+            html.P("Outils de rédiction et d'analyse des actions Tesla au cours du temps.", 
+                   style={'textAlign': 'center'}),
+            
+            # Bouton de navigation
+            html.Div([
+                dcc.Link(
+                    html.Button("Accéder aux données Tesla", id="go-to-data-btn"),
+                    href='/dashboard' # Définit la nouvelle URL
+                )
+            ], style={'textAlign': 'center', 'marginTop': '30px'})
+        ])
 
-    def get_layout(self,data_manager):
+    def get_tesla_layout(self,data_manager):
         return html.Div(
                 style={"padding": "20px"},
                 children=[
