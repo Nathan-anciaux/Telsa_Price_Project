@@ -25,7 +25,11 @@ class LayoutManager:
                     },
                     children=[
                         dcc.Link("Accueil", href='/', style={"color": "white", "textDecoration": "none", "fontWeight": "bold"}),
-                        dcc.Link("Dashboard Tesla", href='/dashboard', style={"color": "white", "textDecoration": "none", "fontWeight": "bold"}),
+                        dcc.Link("Dashboard Tesla", href='/tesla', style={"color": "white", "textDecoration": "none", "fontWeight": "bold"}),
+                        dcc.Link("Dashboard BMW", href='/bmw', style={"color": "white", "textDecoration": "none", "fontWeight": "bold"}),
+                        dcc.Link("Dashboard Lamborghini", href='/lambo', style={"color": "white", "textDecoration": "none", "fontWeight": "bold"}),
+                        dcc.Link("Dashboard Toyota", href='/toyota', style={"color": "white", "textDecoration": "none", "fontWeight": "bold"}),
+                        dcc.Link("Comparateur", href='/compare', style={"color": "white", "textDecoration": "none", "fontWeight": "bold"}),
                     ]
                 ),
                 
@@ -53,77 +57,57 @@ class LayoutManager:
             ], style={'textAlign': 'center', 'marginTop': '30px'})
         ])
 
-    def get_tesla_layout(self,data_manager):
+    def get_brand_layout(self, data_manager, brand_name):
+       #GENERE UN DASHBOARD COMPLET POUR CHAQUE VOITURE
         return html.Div(
-                style={"padding": "20px"},
-                children=[
-                    html.H2("Prédiction du prix de l'action Tesla"),
-                    html.Hr(),
+            style={"padding": "20px"},
+            children=[
+                # Titre dynamique selon la marque
+                html.H2(f"Analyse et Prédiction : Action {brand_name}"),
+                html.Hr(),
 
-                    dcc.Store(
-                        id="selected-values",
-                        data=data_manager.get_default_values(),
-                    ),
+                dcc.Store(
+                    id="selected-values",
+                    data=data_manager.get_default_values(),
+                ),
 
-                    html.Div(
-                        style={"display": "flex"},
-                        children=[
+                html.Div(
+                    style={"display": "flex"},
+                    children=[
+                        # ================= Left panel (Graphiques) =================
+                        html.Div(
+                            style={"width": "60%"},
+                            children=[
+                                dcc.Dropdown(
+                                    id="column-selector",
+                                    options=[{"label": col, "value": col} for col in data_manager.get_features_names()],
+                                    value=data_manager.get_default_feature(),
+                                    clearable=False,
+                                    style={"marginBottom": "20px"}
+                                ),
 
-                            # ================= Left panel =================
-                            html.Div(
-                                style={"width": "60%"},
-                                children=[
-                            
-                                    #Menu déroulant pour choisir la variable et pas mettre des graphs partout
-                                    dcc.Dropdown(
-                                        id="column-selector", #colonne du dataset
-                                        options=[{"label":col, "value":col} for col in data_manager.get_features_names()],
-                                        value=data_manager.get_default_feature(),
-                                        clearable=False, #on vide pas le menu
-                                        style = {"marginBottom": "20px"}
-                                    ),
+                                html.Div([
+                                    dcc.Graph(id="dynamic-hist", config={"displayModeBar": False}),
+                                    html.P(id="hist-legend", style={"textAlign": "center"}),
+                                    dcc.Graph(id="dynamic-pie", config={"displayModeBar": False}),
+                                ]),
 
-                                    #les 2 graphs qui vont changer selon le choix
-                                    html.Div([
-                                        dcc.Graph(id="dynamic-hist", config={"displayModeBar": False}),
-                                        html.P(
-                                            id="hist-legend",
-                                            style={"fontSize": "15px", "marginTop": "15px", "textAlign": "center"}
-                                        ),
-                                        dcc.Graph(id="dynamic-pie", config={"displayModeBar": False}),
-                                    ]),
+                                dcc.Graph(id="main-stock-chart"),
+                            ],
+                        ),
 
-                                    #graph boursier
-                                    dcc.Graph(id = "main-stock-chart"),
-                                ],
-                            ),
-
-                            # ================= Right panel =================
-                            html.Div(
-                                style={
-                                    "width": "40%",
-                                    "paddingLeft": "30px",
-                                    "textAlign": "center",
-                                    "marginTop": "350px",
-                                },
-                                children=[
-                                    html.H4("Résultat"),
-
-                                    html.Div(
-                                        id="prediction-output",
-                                        style={"fontSize": "22px", "marginTop": "30px", "fontWeight": "bold", "color": "#000000"},
-                                    ),
-
-                                    html.Br(),
-
-                                    html.Div(
-                                        id="proba-output",
-                                        style={"fontSize": "16px"},
-                                    ),
-                                ],
-                            ),
-                        ],
-                    ),
-                ],
-            )
+                        # ================= Right panel (IA) =================
+                        html.Div(
+                            style={"width": "40%", "paddingLeft": "30px", "textAlign": "center", "marginTop": "350px"},
+                            children=[
+                                html.H4(f"Résultat IA {brand_name}"),
+                                html.Div(id="prediction-output", style={"fontSize": "22px", "fontWeight": "bold"}),
+                                html.Br(),
+                                html.Div(id="proba-output", style={"fontSize": "16px"}),
+                            ],
+                        ),
+                    ],
+                ),
+            ],
+        )
     

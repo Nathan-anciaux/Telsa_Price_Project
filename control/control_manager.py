@@ -18,11 +18,22 @@ class ControlManager:
             Input('url', 'pathname')
         )
         def display_page(pathname):
-            """Logique de changement de page selon l'URL"""
-            if pathname == '/dashboard':
-                return self.view_manager.get_tesla_layout()
+            # Dictionnaire de correspondance Route -> Nom de la marque
+            brands = {
+                '/tesla': 'Tesla',
+                '/bmw': 'BMW',
+                '/lambo': 'Lamborghini',
+                '/toyota': 'Toyota'
+            }
+
+            if pathname in brands:
+                # On appelle la fonction générique avec le nom correct
+                return self.view_manager.get_car_page(brands[pathname])
+            
+            elif pathname == '/compare':
+                return html.H1("Page de comparaison (À venir)")
+            
             else:
-                # Retour à l'accueil pour toute autre URL
                 return self.view_manager.get_home_layout()
 
         # se declenche des que l'utilisateurs fais une action sur les graphiques
