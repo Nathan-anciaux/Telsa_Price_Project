@@ -1,8 +1,8 @@
 # control/control_manager.py
-import dash
 from dash import callback, Output, Input, State, ctx
-import pandas as pd
 from dash.exceptions import PreventUpdate
+from configparser import ConfigParser
+
 
 class ControlManager:
     def __init__(self, app, data_manager, view_manager):
@@ -84,19 +84,23 @@ class ControlManager:
             # clic sur le camembert
             elif triggered_id == "dynamic-pie" and pie_click:
                 label_clique = pie_click["points"][0]["label"]
-                # Découpage dynamique des catégories
-                categories = pd.cut(df_full[current_col], bins=4, labels=["Valeurs de 0 à 125 M", "Valeurs de 125 à 250 M", "Valeurs de 250 à 325 M", "Valeurs de 325 à 500 M"])
-                jours = df_full[current_col][categories == label_clique]
-                new_vals[current_col] = float(jours.mean())
+                # On demande au dataManager de calculer la moyenne
+                moyenne = self.data_manager.get_pie_category_mean(current_col, label_clique)
+                
+                if moyenne is not None:
+                    new_vals[current_col] = float(moyenne)
+                else:
+                    raise PreventUpdate
 
             # clic que la bourse 
             elif triggered_id == "main-stock-chart" and line_click:
                 date_cliquee = line_click["points"][0]["x"]
-                # Recherche de la ligne correspondant à la date cliquée
-                ligne = df_full[df_full["Date"] == date_cliquee]
-                if not ligne.empty:
-                    for col in self.data_manager.get_features_names():
-                        new_vals[col] = float(ligne[col].values[0])
+                # On demande au dataManager de récupérer les valeurs pour cette date
+                features_dict = self.data_manager.get_features_by_date(date_cliquee)
+                
+                if features_dict:
+                    for col, val in features_dict.items():
+                        new_vals[col] = float(val)
 
             return new_vals
 

@@ -3,7 +3,7 @@ import plotly.graph_objects as go
 
 class PieFactory:
     def __init__(self):
-        self.colors = ["#DFEFFB", "#A2D7FF", "#5CB8FF", "#0091FF"]
+        self.colors = ["#CFE8FB", "#A2D7FF", "#5CB8FF", "#0091FF"]
 
     def make_pie_chart(self, feature, data_manager):
         df = data_manager.get_full_dataframe()

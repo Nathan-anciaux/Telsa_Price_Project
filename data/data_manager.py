@@ -110,3 +110,37 @@ class DataManager:
     def get_defaults(self):
         # pratique pour initialiser le dcc.store de dash
        return self.get_default_values()
+    
+    def get_pie_category_mean(self, column_name, label_clique):
+        
+        df = self.jeux_tesla
+        
+        categories = pd.cut(
+            df[column_name], 
+            bins=4, 
+            labels=["Valeurs de 0 à 125 M", "Valeurs de 125 à 250 M", "Valeurs de 250 à 325 M", "Valeurs de 325 à 500 M"]
+        )
+        jours = df[column_name][categories == label_clique]
+        
+        moyenne = jours.mean()
+        if pd.isna(moyenne):
+            return None
+            
+        return float(moyenne)
+    
+    def get_features_by_date(self, date_string):
+        
+        df = self.jeux_tesla
+
+        ligne = df[df["Date"] == date_string]
+        
+        if ligne.empty:
+            return None
+            
+        # Construit un dictionnaire {nom_colonne: valeur}
+        features_dict = {}
+        for col in self._feature_names:
+            features_dict[col] = float(ligne[col].values[0])
+            
+        return features_dict
+    
