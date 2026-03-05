@@ -4,8 +4,8 @@ class PieFactory:
     def __init__(self):
         self.colors = ["#CFE8FB", "#A2D7FF", "#5CB8FF", "#0091FF"]
 
-    def make_pie_chart(self, feature, data_manager):
-        labels, values = data_manager.get_pie_chart_data(feature)
+    def make_pie_chart(self, feature, data_manager, active_brand):
+        labels, values = data_manager.get_pie_chart_data(active_brand, feature)
 
         fig = go.Figure(data=[
             go.Pie(

@@ -10,9 +10,9 @@ class HistogramFactory:
         self.bar_color = "#0091FF"
         self.line_color = "black"
 
-    def make_histogram(self, feature, selected_value, data_manager):
+    def make_histogram(self, feature, selected_value, data_manager, active_brand):
         # On récupère les données via le data_manager
-        df = data_manager.get_full_dataframe()
+        df = data_manager.get_full_dataframe(active_brand)
         
         fig = go.Figure()
 

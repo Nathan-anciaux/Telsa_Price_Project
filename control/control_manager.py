@@ -46,7 +46,7 @@ class ControlManager:
             Input("active-brand", "data"),
         )
 
-        def update_dynamic_graphs(selected_col, selected_values):
+        def update_dynamic_graphs(selected_col, selected_values, active_brand):
             # si aucune données n'est prete on maj pas pour pas crash 
             # (au lancement du site le dropdown peut envoyer None et ça ferais crash avec le tableau telsa[selected_col])
             if not selected_col or not selected_values or not active_brand:
@@ -78,8 +78,8 @@ class ControlManager:
             Input("selected-values", "data"),
             Input("active-brand", "data"),
         )
-        def update_main_chart(selected_values):
-            return self.view_manager.create_stock_chart()
+        def update_main_chart(selected_values, active_brand):
+            return self.view_manager.create_stock_chart(active_brand)
 
         # gestion des clics
         # regarde quel graphique a été cliqué et met a jour le Store
@@ -136,5 +136,5 @@ class ControlManager:
         def update_prediction(selected_values, active_brand):
             if not selected_values or not active_brand:
                 raise PreventUpdate
-            pred = self.data_manager.get_model_prediction(selected_values)
-            return f"Estimation de l'agitation (Price Range) de {active-brand} : {pred:.2f} $"
+            pred = self.data_manager.get_model_prediction(active_brand, selected_values)
+            return f"Estimation de l'agitation (Price Range) de {active_brand} : {pred:.2f} $"

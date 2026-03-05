@@ -1,9 +1,9 @@
 import plotly.graph_objects as go
 
 class LineChartFactory:
-    def make_stock_chart(self, data_manager):
+    def make_stock_chart(self, data_manager, active_brand):
         # Récupération du dataframe complet (avec Date, Open, High, etc.)
-        df = data_manager.get_full_dataframe()
+        df = data_manager.get_full_dataframe(active_brand)
         
         fig = go.Figure()
 
