@@ -86,7 +86,7 @@ class DataManager:
         model.fit(X, y)
 
         # dico
-        self.dataframesnom_datase = df
+        self.dataframes[nom_dataset] = df
         self.features_dict[nom_dataset] = features
         self.target_names[nom_dataset] = target_name
         self.models[nom_dataset] = model

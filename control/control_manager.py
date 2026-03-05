@@ -43,23 +43,22 @@ class ControlManager:
             Output("hist-legend", "children"),
             Input("column-selector", "value"),
             Input("selected-values", "data"),
+            Input("active-brand", "data"),
         )
 
         def update_dynamic_graphs(selected_col, selected_values):
             # si aucune données n'est prete on maj pas pour pas crash 
             # (au lancement du site le dropdown peut envoyer None et ça ferais crash avec le tableau telsa[selected_col])
-            if selected_col is None or selected_values is None:
+            if not selected_col or not selected_values or not active_brand:
                 raise PreventUpdate
 
-            # on verifie si elle existe bien pour etre securisé
             if selected_col not in selected_values:
-                print(f"ERREUR: La clé '{selected_col}' est absente de selected_values")
                 raise PreventUpdate
 
             val = selected_values[selected_col]
             # Appel au ViewManager pour créer les visuels
-            hist_fig = self.view_manager.create_histogramme(selected_col, val)
-            pie_fig = self.view_manager.create_pie_chart(selected_col)
+            hist_fig = self.view_manager.create_histogramme(selected_col, val, active_brand)
+            pie_fig = self.view_manager.create_pie_chart(selected_col, active_brand)
 
             # les légendes
             descriptions = {
@@ -70,13 +69,14 @@ class ControlManager:
                 "Volume": "Volume d'échanges (titres échangés).",
                 "MA_7": "Moyenne mobile sur 7 jours."
             }
-            text = descriptions.get(selected_col, f"Analyse de {selected_col}.")
+            text = descriptions.get(selected_col, f"Analyse de {selected_col} pour {active_brand}.")
             return hist_fig, pie_fig, text
 
         # affiche le candlestick independemment des autres, pas de selected column
         @callback(
             Output("main-stock-chart", "figure"),
             Input("selected-values", "data"),
+            Input("active-brand", "data"),
         )
         def update_main_chart(selected_values):
             return self.view_manager.create_stock_chart()
@@ -90,6 +90,7 @@ class ControlManager:
             Input("main-stock-chart", "clickData"),
             State("column-selector", "value"), 
             State("selected-values", "data"),
+            State("active-brand", "data"),
             prevent_initial_call=True, # évite de déclencher au chargement de la page
         )
         def update_selected_values(hist_click, pie_click, line_click, current_col, current_data):
@@ -129,9 +130,11 @@ class ControlManager:
         # reagit au changement de données pour recalculer le modele
         @callback(
             Output("prediction-output", "children"),
-            Output("proba-output", "children"),
             Input("selected-values", "data"),
+            Input("active-brand", "data"),
         )
-        def update_prediction(selected_values):
+        def update_prediction(selected_values, active_brand):
+            if not selected_values or not active_brand:
+                raise PreventUpdate
             pred = self.data_manager.get_model_prediction(selected_values)
-            return f"Estimation de l'agitation (Price Range) : {pred:.2f} $", ""
+            return f"Estimation de l'agitation (Price Range) de {active-brand} : {pred:.2f} $"

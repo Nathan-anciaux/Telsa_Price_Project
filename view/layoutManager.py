@@ -82,13 +82,15 @@ class LayoutManager:
         return html.Div(
             style={"padding": "20px"},
             children=[
+                dcc.Store(id='active-brand', data=brand_name),
+                html.H2(f"Analyse de {brand_name}"),    
                 # Titre dynamique selon la marque
                 html.H2(f"Analyse et Prédiction : Action {brand_name}"),
                 html.Hr(),
 
                 dcc.Store(
                     id="selected-values",
-                    data=data_manager.get_default_values(),
+                    data=data_manager.get_default_values(brand_name),
                 ),
 
                 html.Div(
@@ -100,8 +102,8 @@ class LayoutManager:
                             children=[
                                 dcc.Dropdown(
                                     id="column-selector",
-                                    options=[{"label": col, "value": col} for col in data_manager.get_features_names()],
-                                    value=data_manager.get_default_feature(),
+                                    options=[{"label": col, "value": col} for col in data_manager.get_features_names(brand_name)],
+                                    value=data_manager.get_default_feature(brand_name),
                                     clearable=False,
                                     style={"marginBottom": "20px"}
                                 ),
