@@ -44,34 +44,34 @@ class LayoutManager:
     def get_home_layout(self):
         #affichage de la page d'acceuil
         return html.Div([
-            html.H1("Analyse de tesla", style={'textAlign': 'center', 'marginTop': '50px'}),
-            html.P("Outils de prédiction et d'analyse des actions Tesla au cours du temps.", 
+            html.H1("Analyse du marché Automobile", style={'textAlign': 'center', 'marginTop': '50px'}),
+            html.P("Outils de prédiction et d'analyse des actions Automobiles au cours du temps.", 
                    style={'textAlign': 'center'}),
             
             # Bouton de navigation
             html.Div([
                 dcc.Link(
-                    html.Button("Accéder aux données Tesla", id="go-to-data-btn"),
+                    html.Button("Tesla", id="go-to-data-btn"),
                     href='/tesla' # Définit la nouvelle URL
                 ),
                 html.Br(),
                 dcc.Link(
-                    html.Button("Accéder aux données BMW", id="go-to-data-btn"),
+                    html.Button("BMW", id="go-to-data-btn"),
                     href='/bmw' # Définit la nouvelle URL
                 ),
                 html.Br(),
                 dcc.Link(
-                    html.Button("Accéder aux données Lamborghini", id="go-to-data-btn"),
+                    html.Button("Lamborghini", id="go-to-data-btn"),
                     href='/lambo' # Définit la nouvelle URL
                 ),
                 html.Br(),
                 dcc.Link(
-                    html.Button("Accéder aux données Toyota", id="go-to-data-btn"),
+                    html.Button("Toyota", id="go-to-data-btn"),
                     href='/toyota' # Définit la nouvelle URL
                 ),
                 html.Br(),
                 dcc.Link(
-                    html.Button("Accéder au comparateur", id="go-to-data-btn"),
+                    html.Button("Comparateur", id="go-to-data-btn"),
                     href='/compare' # Définit la nouvelle URL
                 ),
             ], style={'textAlign': 'center', 'marginTop': '30px'})
@@ -82,8 +82,7 @@ class LayoutManager:
         return html.Div(
             style={"padding": "20px"},
             children=[
-                dcc.Store(id='active-brand', data=brand_name),
-                html.H2(f"Analyse de {brand_name}"),    
+                dcc.Store(id='active-brand', data=brand_name),  
                 # Titre dynamique selon la marque
                 html.H2(f"Analyse et Prédiction : Action {brand_name}"),
                 html.Hr(),

@@ -1,5 +1,5 @@
 # control/control_manager.py
-from dash import callback, Output, Input, State, ctx
+from dash import callback, Output, Input, State, ctx, html
 from dash.exceptions import PreventUpdate
 from configparser import ConfigParser
 
@@ -62,7 +62,7 @@ class ControlManager:
 
             # les légendes
             descriptions = {
-                "Open": "Prix d'ouverture de l'action Tesla.",
+                "Open": "Prix d'ouverture de la journée.",
                 "High": "Prix le plus haut atteint en séance.",
                 "Low": "Prix le plus bas atteint en séance.",
                 "Close": "Prix de clôture de la journée.",
@@ -93,13 +93,15 @@ class ControlManager:
             State("active-brand", "data"),
             prevent_initial_call=True, # évite de déclencher au chargement de la page
         )
-        def update_selected_values(hist_click, pie_click, line_click, current_col, current_data):
+        def update_selected_values(hist_click, pie_click, line_click, current_col, current_data, active_brand):
             # on copie pour ne pas modifier sans faire expres
-            new_vals = current_data.copy()
+            if current_data is None or active_brand is None:
+                new_vals = {}
+            else:
+                new_vals = current_data.copy()
 
             # ctx.triggered_id permet de savoir quel input a declenche le callback
             triggered_id = ctx.triggered_id
-            df_full = self.data_manager.get_full_dataframe()
 
             # clic sur l'histogramme, maj d'une valeur spécifique
             if triggered_id == "dynamic-hist" and hist_click:
@@ -108,7 +110,7 @@ class ControlManager:
             # clic sur le camembert
             elif triggered_id == "dynamic-pie" and pie_click:
                 label_clique = pie_click["points"][0]["label"]
-                moyenne = self.data_manager.get_pie_category_mean(current_col, label_clique)
+                moyenne = self.data_manager.get_pie_category_mean(active_brand,current_col, label_clique)
                 
                 if moyenne is not None:
                     new_vals[current_col] = float(moyenne)
@@ -118,7 +120,7 @@ class ControlManager:
             # clic que la bourse 
             elif triggered_id == "main-stock-chart" and line_click:
                 date_cliquee = line_click["points"][0]["x"]
-                features_dict = self.data_manager.get_features_by_date(date_cliquee)
+                features_dict = self.data_manager.get_features_by_date(active_brand, date_cliquee)
                 
                 if features_dict:
                     for col, val in features_dict.items():
