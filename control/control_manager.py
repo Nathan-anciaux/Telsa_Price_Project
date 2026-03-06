@@ -139,4 +139,4 @@ class ControlManager:
             if not selected_values or not active_brand:
                 raise PreventUpdate
             pred = self.data_manager.get_model_prediction(active_brand, selected_values)
-            return f"Estimation de l'agitation (Price Range) de {active_brand} : {pred:.2f} $"
+            return f"{pred:.2f} $"

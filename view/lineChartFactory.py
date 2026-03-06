@@ -28,9 +28,15 @@ class LineChartFactory:
             ))
 
         fig.update_layout(
-            title="Historique Boursier Tesla",
-            template="plotly_dark", 
+            title=dict(
+                text=f"Historique Boursier",
+                font=dict(color='white')
+            ),
+            paper_bgcolor='rgba(0,0,0,0)', 
+            plot_bgcolor='rgba(0,0,0,0)',  
+            font=dict(color='#a0aec0'), 
             xaxis_rangeslider_visible=True,
-            height=400
+            height=400,
+            margin=dict(l=20, r=20, t=40, b=20)
         )
         return fig

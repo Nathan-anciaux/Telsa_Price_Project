@@ -7,21 +7,28 @@ from dash import dcc, html
 
 class LayoutManager:
     def __init__(self):
-        pass
+        # centraliser les couleurs pour les changer plus facilement 
+        self.theme = {
+            "fond_page": "#1a1b2f",    
+            "fond_carte": "#26294d",   
+            "texte": "#ffffff",        
+            "texte_secondaire": "#a0aec0" 
+        }
+
     def get_root_layout(self):
         return html.Div(
-            style={"display": "flex", "flexDirection": "column", "minHeight": "100vh"},
+            style={"display": "flex", "flexDirection": "column", "minHeight": "100vh","backgroundColor": self.theme["fond_page"]},
             children=[
                 dcc.Location(id='url', refresh=False),
                 
                 # --- Barre de Navigation ---
                 html.Nav(
                     style={
-                        "backgroundColor": "#1e1e1e", 
+                        "backgroundColor": "fonc_page", 
                         "padding": "15px 30px", 
                         "display": "flex", 
                         "gap": "30px",
-                        "borderBottom": "2px solid #e2212d"
+                        "borderBottom": "2px solid #5CB8FF"
                     },
                     children=[
                         dcc.Link("Accueil", href='/', style={"color": "white", "textDecoration": "none", "fontWeight": "bold"}),
@@ -44,91 +51,140 @@ class LayoutManager:
     def get_home_layout(self):
         #affichage de la page d'acceuil
         return html.Div([
-            html.H1("Analyse du marché Automobile", style={'textAlign': 'center', 'marginTop': '50px'}),
+            html.H1("Analyse du marché Automobile", style={'textAlign': 'center', 'marginTop': '50px','color': self.theme['texte']}),
             html.P("Outils de prédiction et d'analyse des actions Automobiles au cours du temps.", 
-                   style={'textAlign': 'center'}),
+                   style={'textAlign': 'center','color': self.theme['texte_secondaire']}),
             
             # Bouton de navigation
             html.Div([
                 dcc.Link(
                     html.Button("Tesla", id="go-to-data-btn"),
+                    style={"margin": "5px", "padding": "10px 20px", "cursor": "pointer"}, # style de bouton en vrai je kiffe
                     href='/tesla' # Définit la nouvelle URL
                 ),
                 html.Br(),
                 dcc.Link(
                     html.Button("BMW", id="go-to-data-btn"),
+                    style={"margin": "5px", "padding": "10px 20px", "cursor": "pointer"}, # style de bouton en vrai je kiffe
                     href='/bmw' # Définit la nouvelle URL
                 ),
                 html.Br(),
                 dcc.Link(
                     html.Button("Lamborghini", id="go-to-data-btn"),
+                    style={"margin": "5px", "padding": "10px 20px", "cursor": "pointer"}, # style de bouton en vrai je kiffe
                     href='/lambo' # Définit la nouvelle URL
                 ),
                 html.Br(),
                 dcc.Link(
                     html.Button("Toyota", id="go-to-data-btn"),
+                    style={"margin": "5px", "padding": "10px 20px", "cursor": "pointer"}, # style de bouton en vrai je kiffe
                     href='/toyota' # Définit la nouvelle URL
                 ),
                 html.Br(),
                 dcc.Link(
                     html.Button("Comparateur", id="go-to-data-btn"),
+                    style={"margin": "5px", "padding": "10px 20px", "cursor": "pointer"}, # style de bouton en vrai je kiffe
                     href='/compare' # Définit la nouvelle URL
                 ),
             ], style={'textAlign': 'center', 'marginTop': '30px'})
         ])
 
     def get_brand_layout(self, data_manager, brand_name):
-       #GENERE UN DASHBOARD COMPLET POUR CHAQUE VOITURE
+        # GENERE UN DASHBOARD COMPLET POUR CHAQUE VOITURE
+
+        # style de card
+        card_style = {
+            "backgroundColor": self.theme["fond_carte"],
+            "borderRadius": "12px",
+            "padding": "20px",
+            "boxShadow": "0 4px 6px rgba(0, 0, 0, 0.3)",
+            "display": "flex",
+            "flexDirection": "column",    
+            "boxSizing": "border-box"           
+        }
+       
         return html.Div(
-            style={"padding": "20px"},
+            style={"padding": "10px", "color": self.theme["texte"]},
             children=[
                 dcc.Store(id='active-brand', data=brand_name),  
-                # Titre dynamique selon la marque
+                
                 html.H2(f"Analyse et Prédiction : Action {brand_name}"),
-                html.Hr(),
+                html.Hr(style={"borderColor": "#3a3d60", "marginBottom": "20px"}),
 
                 dcc.Store(
                     id="selected-values",
                     data=data_manager.get_default_values(brand_name),
                 ),
 
+                # ================= Menu Déroulant =================
                 html.Div(
-                    style={"display": "flex"},
+                    style={"marginBottom": "20px", "color": "black", "width": "30%"}, 
                     children=[
-                        # ================= Left panel (Graphiques) =================
-                        html.Div(
-                            style={"width": "60%"},
-                            children=[
-                                dcc.Dropdown(
-                                    id="column-selector",
-                                    options=[{"label": col, "value": col} for col in data_manager.get_features_names(brand_name)],
-                                    value=data_manager.get_default_feature(brand_name),
-                                    clearable=False,
-                                    style={"marginBottom": "20px"}
-                                ),
-
-                                html.Div([
-                                    dcc.Graph(id="dynamic-hist", config={"displayModeBar": False}),
-                                    html.P(id="hist-legend", style={"textAlign": "center"}),
-                                    dcc.Graph(id="dynamic-pie", config={"displayModeBar": False}),
-                                ]),
-
-                                dcc.Graph(id="main-stock-chart"),
-                            ],
-                        ),
-
-                        # ================= Right panel (IA) =================
-                        html.Div(
-                            style={"width": "40%", "paddingLeft": "30px", "textAlign": "center", "marginTop": "350px"},
-                            children=[
-                                html.H4(f"Résultat IA {brand_name}"),
-                                html.Div(id="prediction-output", style={"fontSize": "22px", "fontWeight": "bold"}),
-                                html.Br(),
-                                html.Div(id="proba-output", style={"fontSize": "16px"}),
-                            ],
-                        ),
-                    ],
+                        dcc.Dropdown(
+                            id="column-selector",
+                            options=[{"label": col, "value": col} for col in data_manager.get_features_names(brand_name)],
+                            value=data_manager.get_default_feature(brand_name),
+                            clearable=False,
+                        )
+                    ]
                 ),
+
+                # ================= 3 graphes du haut =================
+                html.Div(
+                    style={"display": "flex", "gap": "20px", "marginBottom": "20px"},
+                    children=[
+                        # Histogramme
+                        html.Div(
+                            style={**card_style, "flex": "1 1 0", "minWidth": 0}, 
+                            children=[
+                                dcc.Graph(
+                                    id="dynamic-hist", 
+                                    config={"displayModeBar": False, "responsive": True}, 
+                                    style={"flex": "1"} 
+                                ),
+                                html.P(id="hist-legend", style={"textAlign": "center", "color": self.theme["texte_secondaire"], "marginTop": "10px"}),
+                            ]
+                        ),
+
+                        # IA
+                        html.Div(
+                            style={
+                                **card_style, 
+                                "flex": "1", 
+                                "justifyContent": "center", 
+                            },
+                            children=[
+                                html.H4(f"Résultat IA (Price Range)", style={"textAlign": "center", "color": "#FFFFFF"}),
+                                html.Hr(style={"borderColor": "#3a3d60", "width": "80%", "margin": "10px auto"}),
+                                html.Div(id="prediction-output", style={"fontSize": "28px", "fontWeight": "bold", "textAlign": "center", "marginTop": "10px"}),
+                                html.Br(),
+                                html.Div(id="proba-output", style={"fontSize": "16px", "textAlign": "center", "color": self.theme["texte_secondaire"]}),
+                            ]
+                        ),
+
+                        # Camembert
+                        html.Div(
+                            style={**card_style, "flex": "1"}, 
+                            children=[
+                                dcc.Graph(id="dynamic-pie", config={"displayModeBar": False}),
+                            ]
+                        ),
+                    ]
+                ),
+
+                # ================= graphique boursier =================
+                html.Div(
+                    style={"display": "flex", "gap": "20px"},
+                    children=[
+                       
+                        html.Div(
+                            style={**card_style, "flex": "1"}, 
+                            children=[
+                                dcc.Graph(id="main-stock-chart"),
+                            ]
+                        ),
+                    ]
+                )
             ],
         )
     

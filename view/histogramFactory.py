@@ -7,8 +7,8 @@ import plotly.graph_objects as go
 class HistogramFactory:
     def __init__(self):
         # On peut définir des couleurs par défaut ici
-        self.bar_color = "#0091FF"
-        self.line_color = "black"
+        self.bar_color = "#43A19E"
+        self.line_color = "white"
 
     def make_histogram(self, feature, selected_value, data_manager, active_brand):
         # On récupère les données via le data_manager
@@ -34,11 +34,16 @@ class HistogramFactory:
         )
 
         fig.update_layout(
-            title=f"Distribution : {feature}",
-            height=200,
+            title=dict(
+                text=f"Distribution : {feature}",
+                font=dict(color='white')
+            ),
             margin=dict(l=40, r=20, t=40, b=40),
             showlegend=False,
-            template="plotly_white"
+            
+            paper_bgcolor='rgba(0,0,0,0)', 
+            plot_bgcolor='rgba(0,0,0,0)',  
+            font=dict(color='#a0aec0')
         )
 
         return fig
