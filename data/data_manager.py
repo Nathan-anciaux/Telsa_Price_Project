@@ -82,7 +82,7 @@ class DataManager:
         # machine learning
         X = df[features]
         y = df[target_name]
-        model = RandomForestRegressor(n_estimators=200, random_state=42)
+        model = RandomForestRegressor(n_estimators=100, random_state=42)
         model.fit(X, y)
 
         # dico

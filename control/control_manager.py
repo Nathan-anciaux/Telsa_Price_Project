@@ -31,7 +31,7 @@ class ControlManager:
                 return self.view_manager.get_car_page(brands[pathname])
             
             elif pathname == '/compare':
-                return html.H1("Page de comparaison (À venir)")
+                return html.H1("Page de comparaison (Soon)"),
             
             else:
                 return self.view_manager.get_home_layout()
