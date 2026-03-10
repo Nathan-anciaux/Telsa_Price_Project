@@ -58,7 +58,8 @@ class DataManager:
 
         # databases pour stocker les 4 dataframes
         self.dataframes = {}
-        self.features_dict = {}
+        self.features_dict = {}    # pour histogramme
+        self.features_ia_dict = {} # pour IA
         self.target_names = {}
         self.models = {}
         self.default_values_dict = {}
@@ -74,20 +75,29 @@ class DataManager:
         features_brutes = self.config.get(nom_dataset, 'features')
         target_name = self.config.get(nom_dataset, 'target')
 
-        # Nettoyage des noms de colonnes
-        features = [f.strip() for f in features_brutes.split(',')]
+        # Nettoyage des noms de colonnes histo
+        features_ui = [f.strip() for f in features_brutes.split(',')]
 
         df = pd.read_csv(chemin).dropna()
 
+        # calcul pourcentage (nouvelle colonne)
+        df['Volatilite_Pourcentage'] = ((df['High'] - df['Low']) / df['Open']) * 100
+        target_name = 'Volatilite_Pourcentage'
+        
+        # IA ( on cache high and low)
+        colonnes_interdites = ['High', 'Low', 'Close'] 
+        features_ia = [col for col in features_ui if col not in colonnes_interdites]
+
         # machine learning
-        X = df[features]
+        X = df[features_ia]
         y = df[target_name]
         model = RandomForestRegressor(n_estimators=100, random_state=42)
         model.fit(X, y)
 
         # dico
         self.dataframes[nom_dataset] = df
-        self.features_dict[nom_dataset] = features
+        self.features_dict[nom_dataset] = features_ui
+        self.features_ia_dict[nom_dataset] = features_ia
         self.target_names[nom_dataset] = target_name
         self.models[nom_dataset] = model
         self.default_values_dict[nom_dataset] = X.mean().to_dict()
@@ -110,13 +120,13 @@ class DataManager:
     
     def get_model_prediction(self, nom_dataset, x_values):
        
-        features = self.features_dict[nom_dataset]
+        features_ia = self.features_ia_dict[nom_dataset]
         model = self.models[nom_dataset]
 
         if isinstance(x_values, dict):
-            x_values = [x_values[feature] for feature in features]
+            x_values = [x_values[feature] for feature in features_ia]
 
-        X_input = pd.DataFrame([x_values], columns=features)
+        X_input = pd.DataFrame([x_values], columns=features_ia)
         return model.predict(X_input)[0]
     
     def get_default_feature(self, nom_dataset):

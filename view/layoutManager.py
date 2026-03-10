@@ -41,7 +41,7 @@ class LayoutManager:
                 ),
                 
                 # --- Zone de Contenu Dynamique ---
-                # flex: 1 permet à cette zone de pousser le footer vers le bas
+                # permet à cette zone de pousser le footer vers le bas
                 html.Div(id='page-content', style={"padding": "40px", "flex": "1"}),
                 
                 
@@ -133,7 +133,7 @@ class LayoutManager:
                 html.Div(
                     style={"display": "flex", "gap": "20px", "marginBottom": "20px"},
                     children=[
-                        # Histogramme
+                        # histogramme
                         html.Div(
                             style={**card_style, "flex": "1 1 0", "minWidth": 0}, 
                             children=[
@@ -162,7 +162,7 @@ class LayoutManager:
                             ]
                         ),
 
-                        # Camembert
+                        # pie chart
                         html.Div(
                             style={**card_style, "flex": "1"}, 
                             children=[

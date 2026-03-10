@@ -62,12 +62,12 @@ class ControlManager:
 
             # les légendes
             descriptions = {
-                "Open": "Prix d'ouverture de la journée.",
-                "High": "Prix le plus haut atteint en séance.",
-                "Low": "Prix le plus bas atteint en séance.",
-                "Close": "Prix de clôture de la journée.",
+                "Open": "Prix d'ouverture de la journée",
+                "High": "Prix le plus haut atteint en séance",
+                "Low": "Prix le plus bas atteint en séance",
+                "Close": "Prix de clôture de la journée",
                 "Volume": "Volume d'échanges (titres échangés).",
-                "MA_7": "Moyenne mobile sur 7 jours."
+                "MA_7": "Moyenne mobile sur 7 jours"
             }
             text = descriptions.get(selected_col, f"Analyse de {selected_col} pour {active_brand}.")
             return hist_fig, pie_fig, text
@@ -139,4 +139,4 @@ class ControlManager:
             if not selected_values or not active_brand:
                 raise PreventUpdate
             pred = self.data_manager.get_model_prediction(active_brand, selected_values)
-            return f"{pred:.2f} $"
+            return f"{pred:.2f} %"
