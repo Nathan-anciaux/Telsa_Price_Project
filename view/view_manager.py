@@ -28,8 +28,8 @@ class ViewManager:
     def get_BMW_layout(self):
         return self.layout_manager.get_BMW_layout(self.data_manager)
     
-    def get_lambo_layout(self):
-        return self.layout_manager.get_lambo_layout(self.data_manager)
+    def get_ferrari_layout(self):
+        return self.layout_manager.get_ferrari_layout(self.data_manager)
     
     def get_toyota_layout(self):
         return self.layout_manager.get_toyota_layout(self.data_manager)
