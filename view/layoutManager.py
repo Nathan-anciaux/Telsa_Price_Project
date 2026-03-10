@@ -34,7 +34,7 @@ class LayoutManager:
                         dcc.Link("Accueil", href='/', style={"color": "white", "textDecoration": "none", "fontWeight": "bold"}),
                         dcc.Link("Dashboard Tesla", href='/tesla', style={"color": "white", "textDecoration": "none", "fontWeight": "bold"}),
                         dcc.Link("Dashboard BMW", href='/bmw', style={"color": "white", "textDecoration": "none", "fontWeight": "bold"}),
-                        dcc.Link("Dashboard Lamborghini", href='/lambo', style={"color": "white", "textDecoration": "none", "fontWeight": "bold"}),
+                        dcc.Link("Dashboard Ferrari", href='/ferrari', style={"color": "white", "textDecoration": "none", "fontWeight": "bold"}),
                         dcc.Link("Dashboard Toyota", href='/toyota', style={"color": "white", "textDecoration": "none", "fontWeight": "bold"}),
                         dcc.Link("Comparateur", href='/compare', style={"color": "white", "textDecoration": "none", "fontWeight": "bold"}),
                     ]

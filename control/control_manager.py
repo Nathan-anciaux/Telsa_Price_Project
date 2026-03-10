@@ -22,7 +22,7 @@ class ControlManager:
             brands = {
                 '/tesla': 'Tesla',
                 '/bmw': 'BMW',
-                '/lambo': 'Lamborghini',
+                '/ferrari': 'Ferrari',
                 '/toyota': 'Toyota'
             }
 

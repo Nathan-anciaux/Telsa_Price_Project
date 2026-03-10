@@ -75,10 +75,30 @@ class DataManager:
         features_brutes = self.config.get(nom_dataset, 'features')
         target_name = self.config.get(nom_dataset, 'target')
 
-        # Nettoyage des noms de colonnes histo
+        # Nettoyage des noms de colonnes
         features_ui = [f.strip() for f in features_brutes.split(',')]
 
-        df = pd.read_csv(chemin).dropna()
+        df = pd.read_csv(chemin)
+
+        #la date est bien une date ?
+        if 'Date' in df.columns:
+            df['Date'] = pd.to_datetime(df['Date'], errors='coerce')
+
+        colonnes_a_nettoyer = list(set(features_ui + [target_name, 'High', 'Low']))
+
+        # Nettoyage et conversion des colonnes High et Low en nombres
+        for col in colonnes_a_nettoyer:
+            if col in df.columns:
+                # On force la conversion en string, on retire les éventuelles virgules/symboles, puis on convertit en numérique
+                df[col] = df[col].astype(str).str.replace('$', '', regex=False)
+                df[col] = pd.to_numeric(df[col], errors='coerce') # errors='coerce' transforme les erreurs en NaN
+
+        # Calcul du Price_Range si inexistant
+        if 'Price_Range' not in df.columns:
+            if 'High' in df.columns and 'Low' in df.columns:
+                df['Price_Range'] = df['High'] - df['Low']
+            else:
+                raise ValueError(f"Les colonnes High et Low sont absentes dans {nom_dataset}.")
 
         # calcul pourcentage (nouvelle colonne)
         df['Volatilite_Pourcentage'] = ((df['High'] - df['Low']) / df['Open']) * 100
@@ -88,9 +108,14 @@ class DataManager:
         colonnes_interdites = ['High', 'Low', 'Close'] 
         features_ia = [col for col in features_ui if col not in colonnes_interdites]
 
+        #je prepare un sous tableau juste pour l'ia au dessous
+        colonnes_model = features_ia + [target_name]
+        df_ml = df[colonnes_model].dropna()
+
+
         # machine learning
-        X = df[features_ia]
-        y = df[target_name]
+        X = df_ml[features_ia]
+        y = df_ml[target_name]
         model = RandomForestRegressor(n_estimators=100, random_state=42)
         model.fit(X, y)
 
@@ -100,7 +125,7 @@ class DataManager:
         self.features_ia_dict[nom_dataset] = features_ia
         self.target_names[nom_dataset] = target_name
         self.models[nom_dataset] = model
-        self.default_values_dict[nom_dataset] = X.mean().to_dict()
+        self.default_values_dict[nom_dataset] = df[features_ui].mean().to_dict()
 
     def get_data(self, nom_dataset):
         df = self.dataframes[nom_dataset]
