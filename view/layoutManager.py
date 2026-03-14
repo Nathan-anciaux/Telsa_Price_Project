@@ -33,7 +33,6 @@ class LayoutManager:
                         dcc.Link("Accueil", href='/', style={"color": "white", "textDecoration": "none", "fontWeight": "bold"}),
                         dcc.Link("Dashboard Tesla", href='/tesla', style={"color": "white", "textDecoration": "none", "fontWeight": "bold"}),
                         dcc.Link("Dashboard BMW", href='/bmw', style={"color": "white", "textDecoration": "none", "fontWeight": "bold"}),
-                        dcc.Link("Dashboard Lamborghini", href='/lambo', style={"color": "white", "textDecoration": "none", "fontWeight": "bold"}),
                         dcc.Link("Dashboard Ferrari", href='/ferrari', style={"color": "white", "textDecoration": "none", "fontWeight": "bold"}),
                         dcc.Link("Dashboard Toyota", href='/toyota', style={"color": "white", "textDecoration": "none", "fontWeight": "bold"}),
                         dcc.Link("Comparateur", href='/compare', style={"color": "white", "textDecoration": "none", "fontWeight": "bold"}),
@@ -67,12 +66,6 @@ class LayoutManager:
                     html.Button("BMW", id="go-to-data-btn"),
                     style={"margin": "5px", "padding": "10px 20px", "cursor": "pointer"}, # style de bouton en vrai je kiffe
                     href='/bmw' # Définit la nouvelle URL
-                ),
-                html.Br(),
-                dcc.Link(
-                    html.Button("Lamborghini", id="go-to-data-btn"),
-                    style={"margin": "5px", "padding": "10px 20px", "cursor": "pointer"}, # style de bouton en vrai je kiffe
-                    href='/lambo' # Définit la nouvelle URL
                 ),
                 html.Br(),
                 dcc.Link(
@@ -204,35 +197,60 @@ class LayoutManager:
         }
 
         return html.Div([
-            html.H2("Laboratoire de Simulation Comparative", style={'textAlign': 'center', 'color': 'white'}),
+            html.H2("Comparateur", style={'textAlign': 'center', 'color': 'white'}),
             
-            # --- LIGNE DU HAUT (Sélecteur à gauche, IA à droite) ---
+            # --- LIGNE DU HAUT ---
             html.Div(style={"display": "flex", "flexWrap": "wrap"}, children=[
                 # GAUCHE : Sélecteur de simulation
-                html.Div(style={**card_style, "flex": "1", "minWidth": "300px"}, children=[
-                    html.H4("⚙️ Paramètres de Simulation", style={"color": "#5CB8FF"}),
-                    html.P("Simulez une variation globale du prix d'ouverture (Open) :"),
-                    dcc.Slider(
-                        id="compare-open-slider",
-                        min=0.8, max=1.2, step=0.01, value=1.0,
-                        marks={0.8: '-20%', 1: 'Normal', 1.2: '+20%'},
+                html.Div(style={**card_style, "flex": "1", "minWidth": "300px", "justifyContent": "center"}, children=[
+                    html.H3("Paramètres de Simulation", style={"color": "white", "textAlign": "center", "marginBottom": "40px"}),
+                    
+                    # --- BLOC OPEN ---
+                    html.P("Simulez une variation globale du prix d'ouverture (Open) :", 
+                           style={"color": "white", "textAlign": "center", "marginBottom": "40px"}), 
+                    html.Div(
+                        style={"width": "85%", "margin": "0 auto", "paddingBottom": "10px"},
+                        children=[
+                            dcc.Slider(
+                                id="compare-open-slider",
+                                min=0.5, max=3.0, step=0.01, value=1.0,
+                                marks={
+                                    0.5: {'label': '-50%', 'style': {'color': 'white'}},
+                                    1.0: {'label': 'Normal', 'style': {'color': 'white'}},
+                                    3.0: {'label': '+200%', 'style': {'color': 'white'}}
+                                },
+                            )
+                        ]
                     ),
-                    html.Br(),
-                    html.P("Simulez la nervosité du marché (Volatility_7d) :"),
-                    dcc.Slider(
-                        id="compare-vol-slider",
-                        min=0.5, max=2.0, step=0.1, value=1.0,
-                        marks={0.5: 'Calme', 1: 'Normal', 2: 'Crise'},
+                    html.Div(id="compare-open-values", style={"marginBottom": "40px"}), 
+                    
+                    # --- BLOC VOLUME ---
+                    html.P("Simulez une variation globale du volume d'échanges (Volume) :", 
+                           style={"color": "white", "textAlign": "center", "marginBottom": "40px"}), 
+                    html.Div(
+                        style={"width": "85%", "margin": "0 auto", "paddingBottom": "10px"},
+                        children=[
+                            dcc.Slider(
+                                id="compare-volume-slider",
+                                min=0.5, max=2.0, step=0.1, value=1.0,
+                                marks={
+                                    0.5: {'label': '-50%', 'style': {'color': 'white'}},
+                                    1.0: {'label': 'Normal', 'style': {'color': 'white'}},
+                                    2.0: {'label': '+100%', 'style': {'color': 'white'}}
+                                },
+                            )
+                        ]
                     ),
+                    html.Div(id="compare-volume-values", style={"marginBottom": "10px"}),
                 ]),
 
-                # DROITE : Résultat de l'IA
+                # Résultat de l'IA
                 html.Div(style={**card_style, "flex": "1", "minWidth": "300px"}, children=[
                     dcc.Graph(id="compare-ia-bar-chart", config={"displayModeBar": False})
                 ]),
             ]),
 
-            # --- LIGNE DU BAS (Historique toute largeur) ---
+            # --- LIGNE DU BAS ---
             html.Div(style={**card_style}, children=[
                 dcc.Graph(id="compare-history-line-chart", config={"displayModeBar": False})
             ])

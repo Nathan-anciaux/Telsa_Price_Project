@@ -22,7 +22,6 @@ class ControlManager:
             brands = {
                 '/tesla': 'Tesla',
                 '/bmw': 'BMW',
-                '/lambo': 'Lamborghini',
                 '/ferrari': 'Ferrari',
                 '/toyota': 'Toyota'
             }
@@ -141,35 +140,64 @@ class ControlManager:
             pred = self.data_manager.get_model_prediction(active_brand, selected_values)
             return f"{pred:.2f} %"
 
+        # --- CALLBACK DU COMPARATEUR IA ---
         @self.app.callback(
             Output("compare-ia-bar-chart", "figure"),
+            Output("compare-open-values", "children"),
+            Output("compare-volume-values", "children"),
             Input("url", "pathname"),
             Input("compare-open-slider", "value"),
-            Input("compare-vol-slider", "value")
+            Input("compare-volume-slider", "value")
         )
-        def update_compare_ia(pathname, open_mult, vol_mult):
+        def update_compare_ia(pathname, open_mult, volume_mult):
             if pathname != '/compare':
                 raise PreventUpdate
+                
+            # Sécurité anti-crash au chargement
+            if open_mult is None or volume_mult is None:
+                raise PreventUpdate
 
-            marques = ["Tesla", "BMW", "Lamborghini", "Ferrari", "Toyota"]
+            marques = ["Tesla", "BMW", "Ferrari", "Toyota"]
             predictions = []
+            open_displays = []
+            volume_displays = []
 
             for marque in marques:
-                # 1. On récupère les moyennes de la marque
                 valeurs = self.data_manager.get_default_values(marque).copy()
                 
-                # 2. On injecte les valeurs simulées par les sliders
-                # On multiplie l'Open par le slider (ex: 1.10 pour +10%)
-                valeurs['Open'] = valeurs['Open'] * open_mult
-                # On ajuste la volatilité historique
-                if 'Volatility_7d' in valeurs:
-                    valeurs['Volatility_7d'] = valeurs['Volatility_7d'] * vol_mult
+                # --- CALCULES OPEN ---
+                new_open = valeurs['Open'] * open_mult
+                valeurs['Open'] = new_open
                 
-                # 3. Prédiction
+                badge_open = html.Span(
+                    f"{marque}: {new_open:.1f}", 
+                    style={"backgroundColor": "#3a3d60", "padding": "4px 8px", "borderRadius": "4px", "fontSize": "12px", "color": "#5CB8FF"}
+                )
+                open_displays.append(badge_open)
+                
+                # --- CALCULES VOLUME ---
+                if 'Volume' in valeurs:
+                    new_volume = valeurs['Volume'] * volume_mult
+                    valeurs['Volume'] = new_volume
+                    volume_formate = f"{int(new_volume):,}".replace(",", " ")
+
+                    badge_volume = html.Span(
+                        f"{marque}: {volume_formate}", 
+                        style={"backgroundColor": "#3a3d60", "padding": "4px 8px", "borderRadius": "4px", "fontSize": "12px", "color": "#5CB8FF"}
+                    )
+                    volume_displays.append(badge_volume)
+                
+                # --- PRÉDICTION ---
                 pred = self.data_manager.get_model_prediction(marque, valeurs)
                 predictions.append(pred)
 
-            return self.view_manager.create_compare_bar_chart(marques, predictions)
+            fig = self.view_manager.create_compare_bar_chart(marques, predictions)
+
+            # Mise en page des badges
+            div_open = html.Div(open_displays, style={"display": "flex", "flexWrap": "wrap", "justifyContent": "center", "gap": "8px"})
+            div_volume = html.Div(volume_displays, style={"display": "flex", "flexWrap": "wrap", "justifyContent": "center", "gap": "8px"})
+
+            return fig, div_open, div_volume
         
         @self.app.callback(
             Output("compare-history-line-chart", "figure"),
@@ -179,5 +207,5 @@ class ControlManager:
             if pathname != '/compare':
                 raise PreventUpdate
                 
-            marques = ["Tesla", "BMW", "Lamborghini", "Ferrari", "Toyota"]
+            marques = ["Tesla", "BMW", "Ferrari", "Toyota"]
             return self.view_manager.create_compare_line_chart(marques)
