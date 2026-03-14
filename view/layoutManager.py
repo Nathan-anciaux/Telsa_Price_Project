@@ -1,4 +1,3 @@
-
 from dash import dcc, html
 
 # =====================================================
@@ -35,6 +34,7 @@ class LayoutManager:
                         dcc.Link("Dashboard Tesla", href='/tesla', style={"color": "white", "textDecoration": "none", "fontWeight": "bold"}),
                         dcc.Link("Dashboard BMW", href='/bmw', style={"color": "white", "textDecoration": "none", "fontWeight": "bold"}),
                         dcc.Link("Dashboard Lamborghini", href='/lambo', style={"color": "white", "textDecoration": "none", "fontWeight": "bold"}),
+                        dcc.Link("Dashboard Ferrari", href='/ferrari', style={"color": "white", "textDecoration": "none", "fontWeight": "bold"}),
                         dcc.Link("Dashboard Toyota", href='/toyota', style={"color": "white", "textDecoration": "none", "fontWeight": "bold"}),
                         dcc.Link("Comparateur", href='/compare', style={"color": "white", "textDecoration": "none", "fontWeight": "bold"}),
                     ]
@@ -73,6 +73,12 @@ class LayoutManager:
                     html.Button("Lamborghini", id="go-to-data-btn"),
                     style={"margin": "5px", "padding": "10px 20px", "cursor": "pointer"}, # style de bouton en vrai je kiffe
                     href='/lambo' # Définit la nouvelle URL
+                ),
+                html.Br(),
+                dcc.Link(
+                    html.Button("Ferrari", id="go-to-data-btn"),
+                    style={"margin": "5px", "padding": "10px 20px", "cursor": "pointer"},
+                    href='/ferrari' 
                 ),
                 html.Br(),
                 dcc.Link(
@@ -188,3 +194,46 @@ class LayoutManager:
             ],
         )
     
+    def get_compare_layout(self):
+        card_style = {
+            "backgroundColor": self.theme["fond_carte"],
+            "borderRadius": "12px",
+            "padding": "20px",
+            "boxShadow": "0 4px 6px rgba(0, 0, 0, 0.3)",
+            "margin": "10px"
+        }
+
+        return html.Div([
+            html.H2("Laboratoire de Simulation Comparative", style={'textAlign': 'center', 'color': 'white'}),
+            
+            # --- LIGNE DU HAUT (Sélecteur à gauche, IA à droite) ---
+            html.Div(style={"display": "flex", "flexWrap": "wrap"}, children=[
+                # GAUCHE : Sélecteur de simulation
+                html.Div(style={**card_style, "flex": "1", "minWidth": "300px"}, children=[
+                    html.H4("⚙️ Paramètres de Simulation", style={"color": "#5CB8FF"}),
+                    html.P("Simulez une variation globale du prix d'ouverture (Open) :"),
+                    dcc.Slider(
+                        id="compare-open-slider",
+                        min=0.8, max=1.2, step=0.01, value=1.0,
+                        marks={0.8: '-20%', 1: 'Normal', 1.2: '+20%'},
+                    ),
+                    html.Br(),
+                    html.P("Simulez la nervosité du marché (Volatility_7d) :"),
+                    dcc.Slider(
+                        id="compare-vol-slider",
+                        min=0.5, max=2.0, step=0.1, value=1.0,
+                        marks={0.5: 'Calme', 1: 'Normal', 2: 'Crise'},
+                    ),
+                ]),
+
+                # DROITE : Résultat de l'IA
+                html.Div(style={**card_style, "flex": "1", "minWidth": "300px"}, children=[
+                    dcc.Graph(id="compare-ia-bar-chart", config={"displayModeBar": False})
+                ]),
+            ]),
+
+            # --- LIGNE DU BAS (Historique toute largeur) ---
+            html.Div(style={**card_style}, children=[
+                dcc.Graph(id="compare-history-line-chart", config={"displayModeBar": False})
+            ])
+        ])

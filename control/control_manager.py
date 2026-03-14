@@ -23,6 +23,7 @@ class ControlManager:
                 '/tesla': 'Tesla',
                 '/bmw': 'BMW',
                 '/lambo': 'Lamborghini',
+                '/ferrari': 'Ferrari',
                 '/toyota': 'Toyota'
             }
 
@@ -31,7 +32,7 @@ class ControlManager:
                 return self.view_manager.get_car_page(brands[pathname])
             
             elif pathname == '/compare':
-                return html.H1("Page de comparaison (Soon)"),
+                return self.view_manager.get_compare_layout()
             
             else:
                 return self.view_manager.get_home_layout()
@@ -45,7 +46,6 @@ class ControlManager:
             Input("selected-values", "data"),
             Input("active-brand", "data"),
         )
-
         def update_dynamic_graphs(selected_col, selected_values, active_brand):
             # si aucune données n'est prete on maj pas pour pas crash 
             # (au lancement du site le dropdown peut envoyer None et ça ferais crash avec le tableau telsa[selected_col])
@@ -140,3 +140,44 @@ class ControlManager:
                 raise PreventUpdate
             pred = self.data_manager.get_model_prediction(active_brand, selected_values)
             return f"{pred:.2f} %"
+
+        @self.app.callback(
+            Output("compare-ia-bar-chart", "figure"),
+            Input("url", "pathname"),
+            Input("compare-open-slider", "value"),
+            Input("compare-vol-slider", "value")
+        )
+        def update_compare_ia(pathname, open_mult, vol_mult):
+            if pathname != '/compare':
+                raise PreventUpdate
+
+            marques = ["Tesla", "BMW", "Lamborghini", "Ferrari", "Toyota"]
+            predictions = []
+
+            for marque in marques:
+                # 1. On récupère les moyennes de la marque
+                valeurs = self.data_manager.get_default_values(marque).copy()
+                
+                # 2. On injecte les valeurs simulées par les sliders
+                # On multiplie l'Open par le slider (ex: 1.10 pour +10%)
+                valeurs['Open'] = valeurs['Open'] * open_mult
+                # On ajuste la volatilité historique
+                if 'Volatility_7d' in valeurs:
+                    valeurs['Volatility_7d'] = valeurs['Volatility_7d'] * vol_mult
+                
+                # 3. Prédiction
+                pred = self.data_manager.get_model_prediction(marque, valeurs)
+                predictions.append(pred)
+
+            return self.view_manager.create_compare_bar_chart(marques, predictions)
+        
+        @self.app.callback(
+            Output("compare-history-line-chart", "figure"),
+            Input("url", "pathname")
+        )
+        def update_compare_history(pathname):
+            if pathname != '/compare':
+                raise PreventUpdate
+                
+            marques = ["Tesla", "BMW", "Lamborghini", "Ferrari", "Toyota"]
+            return self.view_manager.create_compare_line_chart(marques)

@@ -1,5 +1,4 @@
 import pandas as pd
-# j'importe RandomForest de sklearn
 from sklearn.ensemble import RandomForestRegressor
 from configparser import ConfigParser
 
@@ -7,14 +6,11 @@ from configparser import ConfigParser
 # DataManager
 # =====================================================
 """
-# j'importe les données de tesla que je mets dans une variable
 path = "./data"
 file = "tesla_stock_data_2010_2025.csv"
 jeux_tesla = pd.read_csv(f"{path}/{file}")
 
-#on supprime les endroits vides
 jeux_tesla = jeux_tesla.dropna()
-
 
 Date = jeux_tesla.Date
 Open = jeux_tesla.Open
@@ -35,8 +31,6 @@ Month = jeux_tesla.Month
 Day_of_Week = jeux_tesla.Day_of_Week
 Quarter = jeux_tesla.Quarter
 
-
-# j'importe chaque colonne du jeu de test
 Column_tesla = ["Open", "High", "Low", "Volume", "MA_7", "Volatility_7d"]
 X = jeux_tesla[Column_tesla]
 y = jeux_tesla["Price_Range"]
@@ -51,15 +45,13 @@ default_values = X.mean().to_dict()
 """
 
 class DataManager:
-    # chargen nettoie et prédis avec les données qu'on a transmis
     def __init__(self,config_file='config.ini'):
         self.config = ConfigParser()
         self.config.read(config_file)
 
-        # databases pour stocker les 4 dataframes
         self.dataframes = {}
-        self.features_dict = {}    # pour histogramme
-        self.features_ia_dict = {} # pour IA
+        self.features_dict = {}    
+        self.features_ia_dict = {} 
         self.target_names = {}
         self.models = {}
         self.default_values_dict = {}
@@ -75,32 +67,46 @@ class DataManager:
         features_brutes = self.config.get(nom_dataset, 'features')
         target_name = self.config.get(nom_dataset, 'target')
 
-        # Nettoyage des noms de colonnes histo
         features_ui = [f.strip() for f in features_brutes.split(',')]
 
-        df = pd.read_csv(chemin).dropna()
+        df = pd.read_csv(chemin)
 
-        # calcul pourcentage (nouvelle colonne)
+        if 'Date' in df.columns:
+            df['Date'] = pd.to_datetime(df['Date'], errors='coerce')
+
+        colonnes_a_nettoyer = list(set(features_ui + [target_name, 'High', 'Low']))
+
+        for col in colonnes_a_nettoyer:
+            if col in df.columns:
+                df[col] = df[col].astype(str).str.replace('$', '', regex=False)
+                df[col] = pd.to_numeric(df[col], errors='coerce') 
+
+        if 'Price_Range' not in df.columns:
+            if 'High' in df.columns and 'Low' in df.columns:
+                df['Price_Range'] = df['High'] - df['Low']
+            else:
+                raise ValueError(f"Les colonnes High et Low sont absentes dans {nom_dataset}.")
+
         df['Volatilite_Pourcentage'] = ((df['High'] - df['Low']) / df['Open']) * 100
         target_name = 'Volatilite_Pourcentage'
         
-        # IA ( on cache high and low)
         colonnes_interdites = ['High', 'Low', 'Close'] 
         features_ia = [col for col in features_ui if col not in colonnes_interdites]
 
-        # machine learning
-        X = df[features_ia]
-        y = df[target_name]
+        colonnes_model = features_ia + [target_name]
+        df_ml = df[colonnes_model].dropna()
+
+        X = df_ml[features_ia]
+        y = df_ml[target_name]
         model = RandomForestRegressor(n_estimators=100, random_state=42)
         model.fit(X, y)
 
-        # dico
         self.dataframes[nom_dataset] = df
         self.features_dict[nom_dataset] = features_ui
         self.features_ia_dict[nom_dataset] = features_ia
         self.target_names[nom_dataset] = target_name
         self.models[nom_dataset] = model
-        self.default_values_dict[nom_dataset] = X.mean().to_dict()
+        self.default_values_dict[nom_dataset] = df[features_ui].mean().to_dict()
 
     def get_data(self, nom_dataset):
         df = self.dataframes[nom_dataset]
@@ -119,7 +125,6 @@ class DataManager:
         return self.features_dict[nom_dataset]
     
     def get_model_prediction(self, nom_dataset, x_values):
-       
         features_ia = self.features_ia_dict[nom_dataset]
         model = self.models[nom_dataset]
 
@@ -130,7 +135,6 @@ class DataManager:
         return model.predict(X_input)[0]
     
     def get_default_feature(self, nom_dataset):
-        
         return self.features_dict[nom_dataset][0]
     
     def get_default_values(self, nom_dataset):
@@ -183,4 +187,3 @@ class DataManager:
             features_dict[col] = float(ligne[col].values[0])
             
         return features_dict
-    
