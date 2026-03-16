@@ -49,44 +49,67 @@ class LayoutManager:
     
     def get_home_layout(self):
         #affichage de la page d'acceuil
-        return html.Div([
-            html.H1("Analyse du marché Automobile", style={'textAlign': 'center', 'marginTop': '50px','color': self.theme['texte']}),
-            html.P("Outils de prédiction et d'analyse des actions Automobiles au cours du temps.", 
-                   style={'textAlign': 'center','color': self.theme['texte_secondaire']}),
-            
-            # Bouton de navigation
-            html.Div([
-                dcc.Link(
-                    html.Button("Tesla", id="go-to-data-btn"),
-                    style={"margin": "5px", "padding": "10px 20px", "cursor": "pointer"}, # style de bouton en vrai je kiffe
-                    href='/tesla' # Définit la nouvelle URL
+
+        brand_data = [
+            {"name": "Tesla", "path": "/tesla", "logo": "https://upload.wikimedia.org/wikipedia/commons/e/e8/Tesla_logo.png"},
+            {"name": "BMW", "path": "/bmw", "logo": "https://upload.wikimedia.org/wikipedia/commons/4/44/BMW.svg"},
+            {"name": "Ferrari", "path": "/ferrari", "logo": "https://upload.wikimedia.org/wikipedia/commons/3/3a/Deus_Ferrari.png"},
+            {"name": "Toyota", "path": "/toyota", "logo": "https://upload.wikimedia.org/wikipedia/commons/e/ee/Toyota_logo_%28Red%29.svg"},
+        ]
+
+        return html.Div(
+            style={
+                "display": "flex", 
+                "flexDirection": "column", 
+                "alignItems": "center", 
+                "justifyContent": "center",
+                "padding": "40px 20px"
+            },
+            children=[
+                # --- En-tête ---
+                html.Div(
+                    style={"textAlign": "center", "marginBottom": "50px"},
+                    children=[
+                        html.H1("Simuler le marché boursier automobile", 
+                                style={"fontSize": "48px", "fontWeight": "800", "color": "white", "marginBottom": "10px"}),
+                    ]
                 ),
-                html.Br(),
-                dcc.Link(
-                    html.Button("BMW", id="go-to-data-btn"),
-                    style={"margin": "5px", "padding": "10px 20px", "cursor": "pointer"}, # style de bouton en vrai je kiffe
-                    href='/bmw' # Définit la nouvelle URL
+
+                # --- Grille de Marques ---
+                html.Div(
+                    style={
+                        "display": "grid",
+                        "gridTemplateColumns": "repeat(auto-fit, minmax(220px, 1fr))",
+                        "gap": "25px",
+                        "width": "100%",
+                        "maxWidth": "1100px"
+                    },
+                    children=[self._create_brand_card(b["name"], b["path"], b["logo"]) for b in brand_data]
                 ),
-                html.Br(),
+
+                # --- Section Comparateur (Lien Large) ---
                 dcc.Link(
-                    html.Button("Ferrari", id="go-to-data-btn"),
-                    style={"margin": "5px", "padding": "10px 20px", "cursor": "pointer"},
-                    href='/ferrari' 
-                ),
-                html.Br(),
-                dcc.Link(
-                    html.Button("Toyota", id="go-to-data-btn"),
-                    style={"margin": "5px", "padding": "10px 20px", "cursor": "pointer"}, # style de bouton en vrai je kiffe
-                    href='/toyota' # Définit la nouvelle URL
-                ),
-                html.Br(),
-                dcc.Link(
-                    html.Button("Comparateur", id="go-to-data-btn"),
-                    style={"margin": "5px", "padding": "10px 20px", "cursor": "pointer"}, # style de bouton en vrai je kiffe
-                    href='/compare' # Définit la nouvelle URL
-                ),
-            ], style={'textAlign': 'center', 'marginTop': '30px'})
-        ])
+                    href="/compare",
+                    style={"textDecoration": "none", "marginTop": "40px", "width": "100%", "maxWidth": "1100px"},
+                    children=html.Div(
+                        style={
+                            "backgroundColor": "#2d3748", # Une couleur légèrement différente pour se démarquer
+                            "borderRadius": "15px",
+                            "padding": "25px",
+                            "textAlign": "center",
+                            "border": "1px dashed #5CB8FF",
+                            "transition": "all 0.3s"
+                        },
+                        children=[
+                            html.H3("Accéder au Comparateur de marques", 
+                                   style={"color": "#5CB8FF", "margin": "0", "fontSize": "20px"}),
+                            html.P("Simulez des variations de marché sur des marques de voitures.",
+                                   style={"color": "white", "margin": "5px 0 0 0", "fontSize": "14px", "opacity": "0.7"})
+                        ]
+                    )
+                )
+            ]
+        )
 
     def get_brand_layout(self, data_manager, brand_name):
         # GENERE UN DASHBOARD COMPLET POUR CHAQUE VOITURE
@@ -187,6 +210,37 @@ class LayoutManager:
             ],
         )
     
+    def _create_brand_card(self, name, href, logo_url):
+        return dcc.Link(
+            href=href,
+            style={"textDecoration": "none"},
+            children=html.Div(
+                style={
+                    "backgroundColor": self.theme["fond_carte"],
+                    "borderRadius": "20px",
+                    "padding": "40px 20px",
+                    "display": "flex",
+                    "flexDirection": "column",
+                    "alignItems": "center",
+                    "justifyContent": "center",
+                    "border": "1px solid #3a3d60",
+                    "transition": "transform 0.3s, border-color 0.3s, box-shadow 0.3s",
+                    "cursor": "pointer",
+                    "height": "250px"
+                },
+                # Ajout d'un effet simple de hover via une classe CSS si tu as un fichier .css, 
+                # sinon on reste sur du style inline propre.
+                children=[
+                    html.Img(src=logo_url, style={"height": "100px", "width": "auto", "marginBottom": "20px", "filter": "drop-shadow(0px 0px 5px rgba(255,255,255,0.2))"}),
+                    html.H3(name, style={"color": "white", "margin": "0", "fontSize": "24px", "letterSpacing": "1px"}),
+                    html.Div(
+                        "Y aller →", 
+                        style={"marginTop": "15px", "fontSize": "12px", "color": "#5CB8FF", "fontWeight": "bold", "textTransform": "uppercase"}
+                    )
+                ]
+            )
+        )
+
     def get_compare_layout(self):
         card_style = {
             "backgroundColor": self.theme["fond_carte"],
