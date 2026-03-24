@@ -92,12 +92,13 @@ class LayoutManager:
                 ),
                 dcc.Link(
                     href="/compare",
+                    style={"textDecoration": "none"},
                     children=html.Div(
                         "Accéder au Comparateur de marques",
                         style={
                             "marginTop": "40px",
                             "padding": "25px",
-                            "border": "1px dashed #5CB8FF",
+                            "border": "2px solid #5CB8FF",
                             "borderRadius": "15px",
                             "color": "white",
                         },
@@ -124,7 +125,7 @@ class LayoutManager:
             style={"padding": "10px", "color": self.theme["texte"]},
             children=[
                 dcc.Store(id="active-brand", data=brand_name),
-                html.H2(f"Analyse et Prédiction : Action {brand_name}"),
+                html.H2(f"Analyse et Prédiction : Action {brand_name} - {data_manager.get_info(brand_name, 'description')}"),
                 html.Hr(style={"borderColor": "#3a3d60", "marginBottom": "20px"}),
                 dcc.Store(
                     id="selected-values",
@@ -340,21 +341,29 @@ class LayoutManager:
                                     children=[
                                         dcc.Slider(
                                             id="compare-open-slider",
-                                            min=0.5,
-                                            max=3.0,
+                                            min=0,
+                                            max=2.0,
                                             step=0.01,
                                             value=1.0,
                                             marks={
+                                                0: {
+                                                    "label": "-100%",
+                                                    "style": {"color": "white"},
+                                                },
                                                 0.5: {
                                                     "label": "-50%",
                                                     "style": {"color": "white"},
                                                 },
                                                 1.0: {
-                                                    "label": "Normal",
+                                                    "label": "Default",
                                                     "style": {"color": "white"},
                                                 },
-                                                3.0: {
-                                                    "label": "+200%",
+                                                1.5: {
+                                                    "label": "+50%",
+                                                    "style": {"color": "white"},
+                                                },
+                                                2.0: {
+                                                    "label": "+100%",
                                                     "style": {"color": "white"},
                                                 },
                                             },
@@ -383,23 +392,31 @@ class LayoutManager:
                                     children=[
                                         dcc.Slider(
                                             id="compare-volume-slider",
-                                            min=0.5,
+                                             min=0,
                                             max=2.0,
-                                            step=0.1,
+                                            step=0.01,
                                             value=1.0,
                                             marks={
+                                                0: {
+                                                    "label": "-100%",
+                                                    "style": {"color": "white"},
+                                                },
                                                 0.5: {
                                                     "label": "-50%",
                                                     "style": {"color": "white"},
                                                 },
                                                 1.0: {
-                                                    "label": "Normal",
+                                                    "label": "Default",
+                                                    "style": {"color": "white"},
+                                                },
+                                                1.5: {
+                                                    "label": "+50%",
                                                     "style": {"color": "white"},
                                                 },
                                                 2.0: {
                                                     "label": "+100%",
                                                     "style": {"color": "white"},
-                                                },
+                                                }
                                             },
                                         )
                                     ],

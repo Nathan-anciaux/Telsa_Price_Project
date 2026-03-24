@@ -22,7 +22,7 @@ class CompareBarFactory:
 
         # Génération des labels avec feu si volatilité > 5
         text_labels = [
-            f"🔥 {val:.2f} %" if val > 5.0 else f"{val:.2f} %" for val in preds_triees
+            f" {val:.2f} %" if val > 5.0 else f"{val:.2f} %" for val in preds_triees
         ]
 
         # Construction du graphique
