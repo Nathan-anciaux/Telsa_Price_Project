@@ -3,6 +3,7 @@ import dash
 from data.data_manager import DataManager
 from view.view_manager import ViewManager
 from control.control_manager import ControlManager
+
 # =====================================================
 # App
 # =====================================================
@@ -19,4 +20,4 @@ app_cm.register_callbacks()
 # Run
 # =====================================================
 if __name__ == "__main__":
-    app.run(debug=True, port = 8051)
+    app.run(debug=True, port=8051)
