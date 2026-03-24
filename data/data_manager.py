@@ -9,8 +9,11 @@ from configparser import ConfigParser
 
 class DataManager:
     def __init__(self,config_file='config.ini'):
-        self.config = ConfigParser()
+        self.config = ConfigParser(interpolation=None)
         self.config.read(config_file)
+
+        self.liste_marques = [n.strip() for n in self.config.get('GENERAL', 'datasets_a_charger').split(',')]
+        self.infos_marques = {} # Stockera couleurs, logos, etc.
 
         self.dataframes = {}    # données brut
         self.features_dict = {}     # colonnes select
@@ -25,6 +28,21 @@ class DataManager:
 
         for nom_dataset in liste_datasets:
             self._charger_un_dataset(nom_dataset)
+        
+        for nom in self.liste_marques:
+            self._charger_un_dataset(nom)
+            # On récupère les infos visuelles
+            self.infos_marques[nom] = {
+                "couleur": self.config.get(nom, 'couleur', fallback="#ffffff"),
+                "logo": self.config.get(nom, 'logo', fallback=""),
+                "description": self.config.get(nom, 'description', fallback="")
+            }
+
+    def get_marques(self):
+        return self.liste_marques
+
+    def get_info(self, marque, cle):
+        return self.infos_marques.get(marque, {}).get(cle)
 
     def _charger_un_dataset(self, nom_dataset):
         # parametre de config

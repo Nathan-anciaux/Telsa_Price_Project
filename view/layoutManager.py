@@ -14,99 +14,46 @@ class LayoutManager:
             "texte_secondaire": "#a0aec0" 
         }
 
-    def get_root_layout(self):
+    def get_root_layout(self, liste_marques):
+        # Navigation dynamique
+        nav_links = [dcc.Link("Accueil", href='/', style={"color": "white", "textDecoration": "none"})]
+        for m in liste_marques:
+            nav_links.append(dcc.Link(f"Dashboard {m}", href=f'/{m.lower()}', style={"color": "white", "textDecoration": "none"}))
+        nav_links.append(dcc.Link("Comparateur", href='/compare', style={"color": "white", "textDecoration": "none"}))
+
         return html.Div(
-            style={"display": "flex", "flexDirection": "column", "minHeight": "100vh","backgroundColor": self.theme["fond_page"]},
+            style={"display": "flex", "flexDirection": "column", "minHeight": "100vh", "backgroundColor": self.theme["fond_page"]},
             children=[
                 dcc.Location(id='url', refresh=False),
-                
-                # --- Barre de Navigation ---
                 html.Nav(
-                    style={
-                        "backgroundColor": "fonc_page", 
-                        "padding": "15px 30px", 
-                        "display": "flex", 
-                        "gap": "30px",
-                        "borderBottom": "2px solid #5CB8FF"
-                    },
-                    children=[
-                        dcc.Link("Accueil", href='/', style={"color": "white", "textDecoration": "none", "fontWeight": "bold"}),
-                        dcc.Link("Dashboard Tesla", href='/tesla', style={"color": "white", "textDecoration": "none", "fontWeight": "bold"}),
-                        dcc.Link("Dashboard BMW", href='/bmw', style={"color": "white", "textDecoration": "none", "fontWeight": "bold"}),
-                        dcc.Link("Dashboard Ferrari", href='/ferrari', style={"color": "white", "textDecoration": "none", "fontWeight": "bold"}),
-                        dcc.Link("Dashboard Toyota", href='/toyota', style={"color": "white", "textDecoration": "none", "fontWeight": "bold"}),
-                        dcc.Link("Comparateur", href='/compare', style={"color": "white", "textDecoration": "none", "fontWeight": "bold"}),
-                    ]
+                    style={"padding": "15px 30px", "display": "flex", "gap": "30px", "borderBottom": "2px solid #5CB8FF"},
+                    children=nav_links
                 ),
-                
-                # --- Zone de Contenu Dynamique ---
-                # permet à cette zone de pousser le footer vers le bas
                 html.Div(id='page-content', style={"padding": "40px", "flex": "1"}),
-                
-                
             ]
         )
     
-    def get_home_layout(self):
-        #affichage de la page d'acceuil
-
-        brand_data = [
-            {"name": "Tesla", "path": "/tesla", "logo": "https://upload.wikimedia.org/wikipedia/commons/e/e8/Tesla_logo.png"},
-            {"name": "BMW", "path": "/bmw", "logo": "https://upload.wikimedia.org/wikipedia/commons/4/44/BMW.svg"},
-            {"name": "Ferrari", "path": "/ferrari", "logo": "https://upload.wikimedia.org/wikipedia/commons/3/3a/Deus_Ferrari.png"},
-            {"name": "Toyota", "path": "/toyota", "logo": "https://upload.wikimedia.org/wikipedia/commons/e/ee/Toyota_logo_%28Red%29.svg"},
-        ]
-
+    def get_home_layout(self, data_manager):
+        marques = data_manager.get_marques()
         return html.Div(
-            style={
-                "display": "flex", 
-                "flexDirection": "column", 
-                "alignItems": "center", 
-                "justifyContent": "center",
-                "padding": "40px 20px"
-            },
+            style={"display": "flex", "flexDirection": "column", "alignItems": "center", "padding": "40px 20px"},
             children=[
-                # --- En-tête ---
+                html.H1("Simulateur Boursier Automobile", style={"color": "white", "fontSize": "48px"}),
+                
+                # Grille de cartes générée dynamiquement
                 html.Div(
-                    style={"textAlign": "center", "marginBottom": "50px"},
+                    style={"display": "grid", "gridTemplateColumns": "repeat(auto-fit, minmax(220px, 1fr))", "gap": "25px", "width": "100%", "maxWidth": "1100px"},
                     children=[
-                        html.H1("Simuler le marché boursier automobile", 
-                                style={"fontSize": "48px", "fontWeight": "800", "color": "white", "marginBottom": "10px"}),
+                        self._create_brand_card(m, f"/{m.lower()}", data_manager.get_info(m, "logo")) 
+                        for m in marques
                     ]
                 ),
 
-                # --- Grille de Marques ---
-                html.Div(
-                    style={
-                        "display": "grid",
-                        "gridTemplateColumns": "repeat(auto-fit, minmax(220px, 1fr))",
-                        "gap": "25px",
-                        "width": "100%",
-                        "maxWidth": "1100px"
-                    },
-                    children=[self._create_brand_card(b["name"], b["path"], b["logo"]) for b in brand_data]
-                ),
-
-                # --- Section Comparateur (Lien Large) ---
                 dcc.Link(
                     href="/compare",
-                    style={"textDecoration": "none", "marginTop": "40px", "width": "100%", "maxWidth": "1100px"},
-                    children=html.Div(
-                        style={
-                            "backgroundColor": "#2d3748", # Une couleur légèrement différente pour se démarquer
-                            "borderRadius": "15px",
-                            "padding": "25px",
-                            "textAlign": "center",
-                            "border": "1px dashed #5CB8FF",
-                            "transition": "all 0.3s"
-                        },
-                        children=[
-                            html.H3("Accéder au Comparateur de marques", 
-                                   style={"color": "#5CB8FF", "margin": "0", "fontSize": "20px"}),
-                            html.P("Simulez des variations de marché sur des marques de voitures.",
-                                   style={"color": "white", "margin": "5px 0 0 0", "fontSize": "14px", "opacity": "0.7"})
-                        ]
-                    )
+                    children=html.Div("Accéder au Comparateur de marques", style={
+                        "marginTop": "40px", "padding": "25px", "border": "1px dashed #5CB8FF", "borderRadius": "15px", "color": "white"
+                    })
                 )
             ]
         )

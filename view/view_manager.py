@@ -21,10 +21,11 @@ class ViewManager:
         return self.layout_manager.get_brand_layout(self.data_manager, brand)
 
     def get_root_layout(self):
-        return self.layout_manager.get_root_layout()
+        marques = self.data_manager.get_marques()
+        return self.layout_manager.get_root_layout(marques)
     
     def get_home_layout(self):
-        return self.layout_manager.get_home_layout()
+        return self.layout_manager.get_home_layout(self.data_manager)
 
     def get_tesla_layout(self):
         return self.layout_manager.get_tesla_layout(self.data_manager)
@@ -48,7 +49,7 @@ class ViewManager:
         return self.linechart_maker.make_stock_chart(self.data_manager, active_brand)
     
     def create_compare_bar_chart(self, marques, predictions):
-        return self.compare_bar_factory.make_compare_bar_chart(marques, predictions)
+        return self.compare_bar_factory.make_compare_bar_chart(marques, predictions, self.data_manager)
 
     def create_compare_line_chart(self, marques):
         return self.compare_line_factory.make_compare_line_chart(self.data_manager, marques)

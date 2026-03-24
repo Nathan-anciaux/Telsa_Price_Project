@@ -18,23 +18,17 @@ class ControlManager:
             Input('url', 'pathname')
         )
         def display_page(pathname):
-            # Dictionnaire de correspondance Route -> Nom de la marque
-            brands = {
-                '/tesla': 'Tesla',
-                '/bmw': 'BMW',
-                '/ferrari': 'Ferrari',
-                '/toyota': 'Toyota'
-            }
+            marques = self.data_manager.get_marques()
+            # On crée un mapping dynamique { '/tesla': 'Tesla', ... }
+            mapping = {f"/{m.lower()}": m for m in marques}
 
-            if pathname in brands:
-                # On appelle la fonction générique avec le nom correct
-                return self.view_manager.get_car_page(brands[pathname])
-            
+            if pathname == '/':
+                return self.view_manager.get_home_layout()
             elif pathname == '/compare':
                 return self.view_manager.get_compare_layout()
-            
-            else:
-                return self.view_manager.get_home_layout()
+            elif pathname in mapping:
+                return self.view_manager.get_car_page(mapping[pathname])
+            return html.H1("404 - Page non trouvée")
 
         # se declenche des que l'utilisateurs fais une action sur les graphiques
         @callback(
@@ -157,7 +151,7 @@ class ControlManager:
             if open_mult is None or volume_mult is None:
                 raise PreventUpdate
 
-            marques = ["Tesla", "BMW", "Ferrari", "Toyota"]
+            marques = self.data_manager.get_marques()
             predictions = []
             open_displays = []
             volume_displays = []
@@ -207,5 +201,5 @@ class ControlManager:
             if pathname != '/compare':
                 raise PreventUpdate
                 
-            marques = ["Tesla", "BMW", "Ferrari", "Toyota"]
+            marques = self.data_manager.get_marques()
             return self.view_manager.create_compare_line_chart(marques)
