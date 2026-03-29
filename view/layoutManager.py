@@ -181,7 +181,7 @@ class LayoutManager:
                             },
                             children=[
                                 html.H4(
-                                    f"Résultat IA (Price Range)",
+                                    f"Résultat IA (Volatility)",
                                     style={"textAlign": "center", "color": "#FFFFFF"},
                                 ),
                                 html.Hr(

@@ -1,64 +1,85 @@
 import plotly.graph_objects as go
-import pandas as pd
-
 
 class CompareBarFactory:
     def __init__(self):
         pass
 
-    def make_compare_bar_chart(self, marques, predictions, data_manager):
-        # Création du DataFrame pour gérer le tri facilement
-        df = pd.DataFrame({"Marque": marques, "Prediction": predictions})
+    def make_compare_bar_chart(self, marques, predictions, data_manager=None):
+        
+        if data_manager:
+            couleurs = [data_manager.get_info(m, "couleur") for m in marques]
+        else:
+            couleurs = ["#5CB8FF"] * len(marques)
 
-        # Tri par prédiction (croissant pour un bar chart horizontal propre)
-        df = df.sort_values(by="Prediction", ascending=True)
-
-        # Récupération des données triées
-        marques_triees = df["Marque"].tolist()
-        preds_triees = df["Prediction"].tolist()
-
-        # On demande au data_manager la couleur configurée dans le .ini pour chaque marque triée
-        couleurs_triees = [data_manager.get_info(m, "couleur") for m in marques_triees]
-
-        # Génération des labels avec feu si volatilité > 5
+        
         text_labels = [
-            f" {val:.2f} %" if val > 5.0 else f"{val:.2f} %" for val in preds_triees
+            f"⚠️ {val:.2f} %" if val > 5.0 else f"{val:.2f} %" for val in predictions
         ]
 
-        # Construction du graphique
-        fig = go.Figure(
-            data=[
-                go.Bar(
-                    y=marques_triees,
-                    x=preds_triees,
-                    orientation="h",
-                    marker=dict(
-                        color=couleurs_triees,
-                        opacity=0.7,
-                        line=dict(color=couleurs_triees, width=2),
-                    ),
-                    text=text_labels,
-                    textposition="outside",
-                    textfont=dict(size=14, color="white"),
-                    hoverinfo="y+x",
-                )
-            ]
+        # fond gris
+        valeur_max_fond = max(predictions) * 1.2 if predictions else 10
+        fonds_gris = [valeur_max_fond] * len(marques)
+
+        
+        fig = go.Figure()
+
+        # barres fond
+        fig.add_trace(
+            go.Bar(
+                x=marques,
+                y=fonds_gris,
+                marker=dict(color="rgba(255, 255, 255, 0.1)"),
+                width=0.45, 
+                hoverinfo="none",
+                showlegend=False
+            )
         )
 
+        # couleur
+        fig.add_trace(
+            go.Bar(
+                x=marques,
+                y=predictions,
+                marker=dict(
+                    color=couleurs,
+                    opacity=0.9
+                ),
+                width=0.45, 
+                text=text_labels,
+                textposition="inside",     
+                insidetextanchor="end",    
+                textfont=dict(size=14, color="white", family="Arial"),
+                hoverinfo="x+y",
+                showlegend=False
+            )
+        )
+
+        
         fig.update_layout(
             title=dict(
                 text="Prédiction de Volatilité (IA)",
                 font=dict(color="#FFFFFF", size=20),
                 x=0.5,
             ),
+            barmode="overlay", 
+        
+            barcornerradius=20, 
+            
             paper_bgcolor="rgba(0,0,0,0)",
             plot_bgcolor="rgba(0,0,0,0)",
             font=dict(color="#A0AEC0"),
-            margin=dict(l=20, r=80, t=60, b=20),
-            showlegend=False,
-            xaxis=dict(showgrid=False, showticklabels=False, zeroline=False),
+            margin=dict(l=20, r=20, t=60, b=40),
+            
+            xaxis=dict(
+                showgrid=False, 
+                showticklabels=True, 
+                tickfont=dict(size=14, color="white", family="Arial"),
+                zeroline=False
+            ),
             yaxis=dict(
-                tickfont=dict(size=14, color="white"), gridcolor="rgba(0,0,0,0)"
+                showgrid=False, 
+                showticklabels=False, 
+                zeroline=False
             ),
         )
         return fig
