@@ -52,6 +52,7 @@ class LayoutManager:
                         "padding": "15px 30px",
                         "display": "flex",
                         "gap": "30px",
+                        "flexWrap": "wrap",
                         "borderBottom": "2px solid #5CB8FF",
                     },
                     children=nav_links,
@@ -71,7 +72,7 @@ class LayoutManager:
             },
             children=[
                 html.H1(
-                    "Simulateur Boursier Automobile",
+                    "Simulateur Boursier",
                     style={"color": "white", "fontSize": "48px"},
                 ),
                 # Grille de cartes générée dynamiquement
