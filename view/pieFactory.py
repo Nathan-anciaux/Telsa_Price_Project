@@ -23,7 +23,7 @@ class PieFactory:
 
         fig.update_layout(
             title=dict(
-                text=f"Répartition : {feature}", font=dict(color="white", size=16)
+                text=f"Distribution : {feature}", font=dict(color="white", size=16)
             ),
             paper_bgcolor="rgba(0,0,0,0)",  # fond extérieur du graphique invisible
             plot_bgcolor="rgba(0,0,0,0)",  # fond intérieur invisible

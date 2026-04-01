@@ -19,20 +19,20 @@ class LayoutManager:
         # Navigation dynamique
         nav_links = [
             dcc.Link(
-                "Accueil", href="/", style={"color": "white", "textDecoration": "none"}
+                "HomePage", href="/", style={"color": "white", "textDecoration": "none"}
             )
         ]
         for m in liste_marques:
             nav_links.append(
                 dcc.Link(
-                    f"Dashboard {m}",
+                    f"{m} Dashboard",
                     href=f"/{m.lower()}",
                     style={"color": "white", "textDecoration": "none"},
                 )
             )
         nav_links.append(
             dcc.Link(
-                "Comparateur",
+                "Comparator",
                 href="/compare",
                 style={"color": "white", "textDecoration": "none"},
             )
@@ -72,7 +72,7 @@ class LayoutManager:
             },
             children=[
                 html.H1(
-                    "Simulateur Boursier",
+                    "Stock Market Simulator",
                     style={"color": "white", "fontSize": "48px"},
                 ),
                 # Grille de cartes générée dynamiquement
@@ -95,7 +95,7 @@ class LayoutManager:
                     href="/compare",
                     style={"textDecoration": "none"},
                     children=html.Div(
-                        "Accéder au Comparateur de marques",
+                        "Access the Brand Comparison Tool",
                         style={
                             "marginTop": "40px",
                             "padding": "25px",
@@ -126,7 +126,7 @@ class LayoutManager:
             style={"padding": "10px", "color": self.theme["texte"]},
             children=[
                 dcc.Store(id="active-brand", data=brand_name),
-                html.H2(f"Analyse et Prédiction : Action {brand_name} - {data_manager.get_info(brand_name, 'description')}"),
+                html.H2(f"Analysis and Prediction : {brand_name} Stock - {data_manager.get_info(brand_name, 'description')}"),
                 html.Hr(style={"borderColor": "#3a3d60", "marginBottom": "20px"}),
                 dcc.Store(
                     id="selected-values",
@@ -182,7 +182,7 @@ class LayoutManager:
                             },
                             children=[
                                 html.H4(
-                                    f"Résultat IA (Volatility)",
+                                    f"Model Result (Volatility)",
                                     style={"textAlign": "center", "color": "#FFFFFF"},
                                 ),
                                 html.Hr(
@@ -278,7 +278,7 @@ class LayoutManager:
                         },
                     ),
                     html.Div(
-                        "Y aller →",
+                        "Go →",
                         style={
                             "marginTop": "15px",
                             "fontSize": "12px",
@@ -302,7 +302,7 @@ class LayoutManager:
 
         return html.Div(
             [
-                html.H2("Comparateur", style={"textAlign": "center", "color": "white"}),
+                html.H2("Comparator", style={"textAlign": "center", "color": "white"}),
                 # --- LIGNE DU HAUT ---
                 html.Div(
                     style={"display": "flex", "flexWrap": "wrap"},
@@ -317,7 +317,7 @@ class LayoutManager:
                             },
                             children=[
                                 html.H3(
-                                    "Paramètres de Simulation",
+                                    "Simulation Settings",
                                     style={
                                         "color": "white",
                                         "textAlign": "center",
@@ -326,7 +326,7 @@ class LayoutManager:
                                 ),
                                 # --- BLOC OPEN ---
                                 html.P(
-                                    "Simulez une variation globale du prix d'ouverture (Open) :",
+                                    "Simulate an overall variation in the opening price (Open):",
                                     style={
                                         "color": "white",
                                         "textAlign": "center",
@@ -377,7 +377,7 @@ class LayoutManager:
                                 ),
                                 # --- BLOC VOLUME ---
                                 html.P(
-                                    "Simulez une variation globale du volume d'échanges (Volume) :",
+                                    "Simulate an overall change in trading volume (Volume):",
                                     style={
                                         "color": "white",
                                         "textAlign": "center",

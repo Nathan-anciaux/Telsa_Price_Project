@@ -38,7 +38,7 @@ class CompareLineFactory:
 
         fig.update_layout(
             title=dict(
-                text="Performance Historique Comparée (Base 100)",
+                text="Historical Comparative Performance (Base 100)",
                 font=dict(color="white", size=18),
                 x=0.5,
             ),

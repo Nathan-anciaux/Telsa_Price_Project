@@ -57,7 +57,7 @@ class CompareBarFactory:
         
         fig.update_layout(
             title=dict(
-                text="Prédiction de Volatilité (IA)",
+                text="Model Volatility Prediction",
                 font=dict(color="#FFFFFF", size=20),
                 x=0.5,
             ),

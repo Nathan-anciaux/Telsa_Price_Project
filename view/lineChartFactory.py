@@ -41,7 +41,7 @@ class LineChartFactory:
             )
 
         fig.update_layout(
-            title=dict(text=f"Historique Boursier", font=dict(color="white")),
+            title=dict(text=f"Stock Market History", font=dict(color="white")),
             paper_bgcolor="rgba(0,0,0,0)",
             plot_bgcolor="rgba(0,0,0,0)",
             font=dict(color="#a0aec0"),
