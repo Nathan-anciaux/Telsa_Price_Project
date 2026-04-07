@@ -62,7 +62,7 @@ class ControlManager:
                 "MA_7": "7-day moving average",
             }
             text = descriptions.get(
-                selected_col, f"Analyse de {selected_col} pour {active_brand}."
+                selected_col, f"Analysis of {selected_col} for {active_brand}."
             )
             return hist_fig, pie_fig, text
 
