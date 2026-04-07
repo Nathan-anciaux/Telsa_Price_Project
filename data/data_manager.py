@@ -149,10 +149,10 @@ class DataManager:
             df[column_name],
             bins=4,
             labels=[
-                "Quartile 1 (Bas)",
+                "Quartile 1 (Low)",
                 "Quartile 2",
                 "Quartile 3",
-                "Quartile 4 (Haut)",
+                "Quartile 4 (High)",
             ],
         )
 
