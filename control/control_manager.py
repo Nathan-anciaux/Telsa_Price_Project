@@ -54,12 +54,12 @@ class ControlManager:
 
             # les légendes
             descriptions = {
-                "Open": "Prix d'ouverture de la journée",
-                "High": "Prix le plus haut atteint en séance",
-                "Low": "Prix le plus bas atteint en séance",
-                "Close": "Prix de clôture de la journée",
-                "Volume": "Volume d'échanges (titres échangés).",
-                "MA_7": "Moyenne mobile sur 7 jours",
+                "Open": "Opening price for the day",
+                "High": "Highest price reached during the trading session",
+                "Low": "Lowest price reached during the session",
+                "Close": "Closing price for the day",
+                "Volume": "Trading volume (securities traded).",
+                "MA_7": "7-day moving average",
             }
             text = descriptions.get(
                 selected_col, f"Analyse de {selected_col} pour {active_brand}."
