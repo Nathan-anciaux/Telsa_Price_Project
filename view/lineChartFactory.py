@@ -2,7 +2,10 @@ import plotly.graph_objects as go
 
 
 class LineChartFactory:
-    def make_stock_chart(self, data_manager, active_brand):
+    def make_stock_chart(self, data_manager, active_brand, extra_lines=None):
+        # sécurité
+        if extra_lines is None:
+            extra_lines = {}
         # Récupération du dataframe complet (avec Date, Open, High, etc.)
         df = data_manager.get_full_dataframe(active_brand)
 
@@ -24,24 +27,25 @@ class LineChartFactory:
                 high=df["High"],
                 low=df["Low"],
                 close=df[col_close],
-                name="Prix Tesla",
+                name=f"Prix {active_brand}",
             )
         )
 
         # Moyenne mobile 7 jours
-        if "MA_7" in df.columns:
-            fig.add_trace(
-                go.Scatter(
-                    x=df["Date"],
-                    y=df["MA_7"],
-                    mode="lines",
-                    name="Moyenne 7j",
-                    line=dict(color="orange", width=1.5),
+        for col_name, legend_name in extra_lines.items():
+            if col_name in df.columns: # Sécurité
+                fig.add_trace(
+                    go.Scatter(
+                        x=df["Date"],
+                        y=df[col_name],
+                        mode="lines",
+                        name=legend_name,
+                        line=dict(width=1.5),
+                    )
                 )
-            )
 
         fig.update_layout(
-            title=dict(text=f"Stock Market History", font=dict(color="white")),
+            title=dict(text=f"Stock Market History - {active_brand}", font=dict(color="white")),
             paper_bgcolor="rgba(0,0,0,0)",
             plot_bgcolor="rgba(0,0,0,0)",
             font=dict(color="#a0aec0"),
