@@ -25,7 +25,7 @@ class PieFactory:
             title=dict(
                 text=f"Distribution : {feature}", font=dict(color="white", size=16)
             ),
-            paper_bgcolor="rgba(0,0,0,0)",  # fond extérieur du graphique invisible
+            paper_bgcolor="rgba(0,0,0,0)",  # fond extérieur du graphique invisifble
             plot_bgcolor="rgba(0,0,0,0)",  # fond intérieur invisible
             font=dict(color="#A0AEC0"),  # couleur texte général
             margin=dict(l=20, r=20, t=40, b=20),

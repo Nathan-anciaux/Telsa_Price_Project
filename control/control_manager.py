@@ -52,18 +52,9 @@ class ControlManager:
             )
             pie_fig = self.view_manager.create_pie_chart(selected_col, active_brand)
 
-            # les légendes
-            descriptions = {
-                "Open": "Opening price for the day",
-                "High": "Highest price reached during the trading session",
-                "Low": "Lowest price reached during the session",
-                "Close": "Closing price for the day",
-                "Volume": "Trading volume (securities traded).",
-                "MA_7": "7-day moving average",
-            }
-            text = descriptions.get(
-                selected_col, f"Analysis of {selected_col} for {active_brand}."
-            )
+            # pour les descriptions de l'histogramme
+            text = self.view_manager.get_feature_description(selected_col, active_brand)
+
             return hist_fig, pie_fig, text
 
         # affiche le candlestick independemment des autres, pas de selected column

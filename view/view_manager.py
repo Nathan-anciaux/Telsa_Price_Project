@@ -50,3 +50,14 @@ class ViewManager:
 
     def get_compare_layout(self):
         return self.layout_manager.get_compare_layout()
+    
+    def get_feature_description(self, feature, brand):
+        descriptions = {
+            "Open": "Opening price for the day",
+            "High": "Highest price reached during the trading session",
+            "Low": "Lowest price reached during the session",
+            "Close": "Closing price for the day",
+            "Volume": "Trading volume (securities traded).",
+            "MA_7": "7-day moving average",
+        }
+        return descriptions.get(feature, f"Analysis of {feature} for {brand}.")
