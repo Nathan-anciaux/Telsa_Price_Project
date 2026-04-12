@@ -6,35 +6,28 @@ import plotly.graph_objects as go
 
 
 class HistogramFactory:
-    def __init__(self):
-        # On peut définir des couleurs par défaut ici
-        self.bar_color = "#43A19E"
-        self.line_color = "white"
+    def __init__(self, theme):
+        self.theme = theme
 
     def make_histogram(self, feature, selected_value, data_manager, active_brand):
-        # On récupère les données via le data_manager
         df = data_manager.get_full_dataframe(active_brand)
-
         fig = go.Figure()
 
-        fig.add_trace(
-            go.Histogram(
-                x=df[feature], nbinsx=20, opacity=0.7, marker_color=self.bar_color
-            )
-        )
+        fig.add_trace(go.Histogram(
+            x=df[feature], nbinsx=20, opacity=0.7, 
+            marker_color=self.theme["accent"] # Dynamique
+        ))
 
-        # Selected value curseur
         fig.add_vline(
-            x=selected_value, line_dash="dash", line_width=2, line_color=self.line_color
+            x=selected_value, line_dash="dash", line_width=2, 
+            line_color=self.theme["texte"] # Dynamique
         )
 
         fig.update_layout(
-            title=dict(text=f"Distribution : {feature}", font=dict(color="white")),
-            margin=dict(l=40, r=20, t=40, b=40),
-            showlegend=False,
+            title=dict(text=f"Distribution : {feature}", font=dict(color=self.theme["texte"])),
             paper_bgcolor="rgba(0,0,0,0)",
             plot_bgcolor="rgba(0,0,0,0)",
-            font=dict(color="#a0aec0"),
+            font=dict(color=self.theme["texte_secondaire"], family=self.theme["font_family"]),
+            margin=dict(l=40, r=20, t=40, b=40),
         )
-
         return fig

@@ -10,16 +10,14 @@ from view.CompareLineFactory import CompareLineFactory
 class ViewManager:
     def __init__(self, data_manager):
         self.data_manager = data_manager
-
         self.layout_manager = LayoutManager()
         mon_theme = self.layout_manager.theme
 
         # Initialisation des usines (Factories)
-        self.histogram_maker = HistogramFactory()
-        self.pie_maker = PieFactory()
-        self.linechart_maker = LineChartFactory()
-        self.layout_manager = LayoutManager()
-        self.compare_bar_factory = CompareBarFactory()
+        self.histogram_maker = HistogramFactory(mon_theme)
+        self.pie_maker = PieFactory(mon_theme)
+        self.linechart_maker = LineChartFactory(mon_theme)
+        self.compare_bar_factory = CompareBarFactory(mon_theme)
         self.compare_line_factory = CompareLineFactory(mon_theme)
 
     def get_car_page(self, brand):

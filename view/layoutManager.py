@@ -14,7 +14,8 @@ class LayoutManager:
             "texte": "#ffffff",
             "texte_secondaire": "#a0aec0",
             "grille": "#3a3d60",
-            "accent": "#5CB8FF"
+            "accent": "#5CB8FF",
+            "font_family": "Arial, sans-serif"
         }
 
     def get_root_layout(self, liste_marques):
