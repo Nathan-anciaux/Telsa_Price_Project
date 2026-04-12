@@ -2,7 +2,8 @@ import plotly.graph_objects as go
 
 
 class CompareLineFactory:
-    def __init__(self):
+    def __init__(self, theme):
+        self.theme = theme
         # On récupère tout dynamiquement via le data_manager dans la méthode ci-dessous.
         pass
 
@@ -39,12 +40,12 @@ class CompareLineFactory:
         fig.update_layout(
             title=dict(
                 text="Historical Comparative Performance (Base 100)",
-                font=dict(color="white", size=18),
+                font=dict(color=self.theme["texte"], size=18),
                 x=0.5,
             ),
             paper_bgcolor="rgba(0,0,0,0)",
             plot_bgcolor="rgba(0,0,0,0)",
-            font=dict(color="#A0AEC0"),
+            font=dict(color=self.theme["texte_secondaire"]),
             margin=dict(l=40, r=20, t=60, b=40),
             hovermode="x unified",
             legend=dict(
@@ -53,14 +54,14 @@ class CompareLineFactory:
                 y=-0.25,
                 xanchor="center",
                 x=0.5,
-                font=dict(color="white"),
+                font=dict(color=self.theme["texte"]), 
             ),
             yaxis=dict(
                 title="Performance indexée",
-                gridcolor="#3a3d60",
-                zerolinecolor="#5CB8FF",
+                gridcolor=self.theme["grille"],
+                zerolinecolor=self.theme["accent"],
                 ticksuffix="%",
             ),
-            xaxis=dict(gridcolor="#3a3d60"),
+            xaxis=dict(gridcolor=self.theme["grille"]),
         )
         return fig
