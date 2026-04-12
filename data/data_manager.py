@@ -190,16 +190,15 @@ class DataManager:
             features_dict[col] = float(ligne[col].values[0])
 
         return features_dict
-    
+
     def get_chart_indicators(self, active_brand):
         # Analyse les données et retourne un dictionnaire des lignes à tracer
         df = self.get_full_dataframe(active_brand)
         indicators = {}
-        
+
         for col in df.columns:
             if col.startswith("MA_"):
                 jours = col.split("_")[1]
                 indicators[col] = f"Moyenne {jours}j"
-                
+
         return indicators
-    

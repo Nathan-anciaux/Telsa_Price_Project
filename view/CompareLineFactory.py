@@ -54,7 +54,7 @@ class CompareLineFactory:
                 y=-0.25,
                 xanchor="center",
                 x=0.5,
-                font=dict(color=self.theme["texte"]), 
+                font=dict(color=self.theme["texte"]),
             ),
             yaxis=dict(
                 title="Performance indexée",

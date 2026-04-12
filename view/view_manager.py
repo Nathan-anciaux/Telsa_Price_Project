@@ -34,11 +34,14 @@ class ViewManager:
         return self.histogram_maker.make_histogram(
             feature, val, self.data_manager, active_brand
         )
+
     def create_pie_chart(self, feature, active_brand):
         return self.pie_maker.make_pie_chart(feature, self.data_manager, active_brand)
 
-    def create_stock_chart(self, active_brand,extra_lines=None):
-        return self.linechart_maker.make_stock_chart(self.data_manager, active_brand, extra_lines=extra_lines)
+    def create_stock_chart(self, active_brand, extra_lines=None):
+        return self.linechart_maker.make_stock_chart(
+            self.data_manager, active_brand, extra_lines=extra_lines
+        )
 
     def create_compare_bar_chart(self, marques, predictions):
         return self.compare_bar_factory.make_compare_bar_chart(
@@ -52,7 +55,7 @@ class ViewManager:
 
     def get_compare_layout(self):
         return self.layout_manager.get_compare_layout()
-    
+
     def get_feature_description(self, feature, brand):
         descriptions = {
             "Open": "Opening price for the day",

@@ -1,5 +1,6 @@
 import plotly.graph_objects as go
 
+
 class LineChartFactory:
     def __init__(self, theme):
         self.theme = theme
@@ -7,7 +8,7 @@ class LineChartFactory:
     def make_stock_chart(self, data_manager, active_brand, extra_lines=None):
         if extra_lines is None:
             extra_lines = {}
-            
+
         df = data_manager.get_full_dataframe(active_brand)
 
         # --- SÉCURITÉ : Détection de la colonne Close ---
@@ -28,7 +29,7 @@ class LineChartFactory:
                 open=df["Open"],
                 high=df["High"],
                 low=df["Low"],
-                close=df[col_close], # Utilise la colonne détectée
+                close=df[col_close],  # Utilise la colonne détectée
                 name=f"Prix {active_brand}",
             )
         )
@@ -42,20 +43,19 @@ class LineChartFactory:
                         y=df[col_name],
                         mode="lines",
                         name=legend_name,
-                        line=dict(width=1.5)
+                        line=dict(width=1.5),
                     )
                 )
 
         fig.update_layout(
             title=dict(
-                text=f"Stock Market History - {active_brand}", 
-                font=dict(color=self.theme["texte"])
+                text=f"Stock Market History - {active_brand}",
+                font=dict(color=self.theme["texte"]),
             ),
             paper_bgcolor="rgba(0,0,0,0)",
             plot_bgcolor="rgba(0,0,0,0)",
             font=dict(
-                color=self.theme["texte_secondaire"], 
-                family=self.theme["font_family"]
+                color=self.theme["texte_secondaire"], family=self.theme["font_family"]
             ),
             xaxis=dict(gridcolor=self.theme["grille"], rangeslider_visible=True),
             yaxis=dict(gridcolor=self.theme["grille"]),

@@ -15,7 +15,7 @@ class LayoutManager:
             "texte_secondaire": "#a0aec0",
             "grille": "#3a3d60",
             "accent": "#5CB8FF",
-            "font_family": "Arial, sans-serif"
+            "font_family": "Arial, sans-serif",
         }
 
     def get_root_layout(self, liste_marques):
@@ -129,7 +129,9 @@ class LayoutManager:
             style={"padding": "10px", "color": self.theme["texte"]},
             children=[
                 dcc.Store(id="active-brand", data=brand_name),
-                html.H2(f"Analysis and Prediction : {brand_name} Stock - {data_manager.get_info(brand_name, 'description')}"),
+                html.H2(
+                    f"Analysis and Prediction : {brand_name} Stock - {data_manager.get_info(brand_name, 'description')}"
+                ),
                 html.Hr(style={"borderColor": "#3a3d60", "marginBottom": "20px"}),
                 dcc.Store(
                     id="selected-values",
@@ -396,7 +398,7 @@ class LayoutManager:
                                     children=[
                                         dcc.Slider(
                                             id="compare-volume-slider",
-                                             min=0,
+                                            min=0,
                                             max=2.0,
                                             step=0.01,
                                             value=1.0,
@@ -420,7 +422,7 @@ class LayoutManager:
                                                 2.0: {
                                                     "label": "+100%",
                                                     "style": {"color": "white"},
-                                                }
+                                                },
                                             },
                                         )
                                     ],

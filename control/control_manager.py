@@ -65,7 +65,9 @@ class ControlManager:
         )
         def update_main_chart(selected_values, active_brand):
             lignes_a_tracer = self.data_manager.get_chart_indicators(active_brand)
-            return self.view_manager.create_stock_chart(active_brand, extra_lines=lignes_a_tracer)
+            return self.view_manager.create_stock_chart(
+                active_brand, extra_lines=lignes_a_tracer
+            )
 
         # gestion des clics
         # regarde quel graphique a été cliqué et met a jour le Store
